@@ -1,0 +1,14 @@
+allowBuilds:
+  sharp: true
+  unrs-resolver: true
+
+# Security overrides for versions next pins below the patched releases:
+# postcss GHSA (sourceMappingURL file disclosure, <=8.5.17) and
+# sharp/libvips CVEs (<0.35.0). Drop when next's own ranges catch up.
+overrides:
+  postcss: ">=8.5.22"
+  sharp: ">=0.35.0"
+# brace-expansion needs no override: GHSA-rgw5-rvv9-x895 (>=4.0.0, <5.0.9) only
+# matched the 5.x copy under minimatch@10, and an in-range update took it to
+# 5.0.9. The 1.1.18 copy under eslint's minimatch@3 is outside that range and
+# stays.
