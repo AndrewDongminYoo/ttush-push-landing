@@ -2,9 +2,147 @@
 
 :root {
   color-scheme: dark;
+
+  /* Every value below is copied from the app rather than picked for the web.
+     The surface, panel, border and muted text come from lib/game/view/game_page.dart;
+     the player colors and the pale slate come from lib/game/view/round_board.dart.
+     Keeping them identical is what makes the page and a screenshot look like the
+     same product. */
+  --void: #0b0d12; /* _surfaceColor */
+  --dusk: #161a22; /* _panelColor */
+  --edge: #303846; /* _panelBorderColor */
+  --ink: #e7ecf5; /* _footholdColor — the page and the stone share one white */
+  --ink-dim: #8a93a6; /* _mutedTextColor */
+  --azure: #2a48df; /* _firstPlayerColor */
+  --ember: #e14b4b; /* _secondPlayerColor */
+  --brass: #f3ce8e; /* _damagedFootholdColor, and the sky art's warm rim light */
+
+  /* The two player colors are chosen to be told apart on a dark board, not to
+     be read as text on one. These lifted tints carry the same identity at a
+     contrast ratio body copy can use. */
+  --azure-ink: #7d93f0;
+  --ember-ink: #ef8a8a;
+}
+
+@theme inline {
+  --color-void: var(--void);
+  --color-dusk: var(--dusk);
+  --color-edge: var(--edge);
+  --color-ink: var(--ink);
+  --color-ink-dim: var(--ink-dim);
+  --color-azure: var(--azure);
+  --color-ember: var(--ember);
+  --color-azure-ink: var(--azure-ink);
+  --color-ember-ink: var(--ember-ink);
+  --color-brass: var(--brass);
+  --font-sans: var(--font-poppins), var(--font-gothic-a1), ui-sans-serif, system-ui, sans-serif;
 }
 
 body {
-  background: #0b0d12;
-  color: #ffffff;
+  background: var(--void);
+  color: var(--ink);
+  /* Korean is the default locale and breaks mid-word without keep-all, which
+     only affects CJK — the English locale behaves as normal. The pair keeps
+     어절 whole while still breaking a word that cannot fit at all, which the
+     8-character 개인정보처리방침 link needs on a 320px screen. */
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+/* ---------------------------------------------------------------------------
+   Hero board replay.
+
+   The board plays four hard-coded frames on a loop. The motion is the whole
+   point of the piece — push and fall is the game — so it is the one animated
+   element on the page, and under reduced motion the component renders a single
+   still frame instead of running the timer.
+   --------------------------------------------------------------------------- */
+
+.tile-layer {
+  position: absolute;
+  inset: 0;
+  transition: opacity 340ms ease-out;
+}
+
+.piece {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20%;
+  height: 20%;
+  transition: transform 520ms cubic-bezier(0.34, 0.9, 0.3, 1);
+  will-change: transform;
+}
+
+/* Accelerating, not eased-out: the explorer is falling, not sliding. */
+.piece-fallen {
+  transition:
+    transform 760ms cubic-bezier(0.5, 0, 0.85, 0.4),
+    opacity 760ms ease-in 160ms;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tile-layer,
+  .piece,
+  .piece-fallen {
+    transition: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Markdown-sourced legal pages. The privacy policy is the one page Google Play
+   requires by URL, so its headings are styled here rather than left to
+   Tailwind's preflight, which strips them.
+   --------------------------------------------------------------------------- */
+
+.policy h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.75rem;
+}
+
+.policy h2 {
+  font-size: 1.1875rem;
+  font-weight: 600;
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.policy h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.policy p,
+.policy li {
+  color: var(--ink-dim);
+  line-height: 1.8;
+  margin-bottom: 0.75rem;
+}
+
+.policy ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.policy ol {
+  list-style: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.policy a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.policy strong {
+  color: var(--ink);
+  font-weight: 600;
 }
