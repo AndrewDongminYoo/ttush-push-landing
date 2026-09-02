@@ -1,6 +1,12 @@
 @import "tailwindcss";
 
 :root {
+  /* The page is dark in one mode only, and that is a brand constraint rather
+     than a shortcut. The app's own surface is #0b0d12 and every asset on this
+     page is lit for a night sky, so a light mode would show the product in a
+     light it never has. Sections never invert either: one theme, top to
+     bottom. The other page-wide lock is shape, and it is radius 0 everywhere,
+     because the game's world is cut stone. */
   color-scheme: dark;
 
   /* Every value below is copied from the app rather than picked for the web.

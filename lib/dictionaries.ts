@@ -9,11 +9,20 @@ import type { Locale } from "./i18n";
 // earlier version of this page. The push, the blocked push, the two-step
 // foothold decay, the counter-push ban, the two win conditions and the
 // loser-plays-first reset are all decided there.
+//
+// The rules group by what the engine does with them rather than by reading
+// order. `resolve_move` rejects a move onto a hole outright
+// (`IllegalMove::Hole`), but a piece pushed onto one is not rejected at all:
+// that is the `knockout` branch, and it ends the round. A legality constraint
+// and a termination condition are different things, so they sit in different
+// groups. An earlier version of this file welded them into one sentence that
+// contradicted itself.
 export type Dictionary = {
   meta: { title: string; description: string; ogAlt: string };
   hero: {
     tagline: string;
     sub: string;
+    cta: string;
     boardCaption: string;
     boardAlt: string;
     boardStill: string;
@@ -23,14 +32,18 @@ export type Dictionary = {
     sub: string;
     states: readonly { name: string; desc: string }[];
   };
-  rules: { title: string; items: readonly string[] };
+  rules: {
+    title: string;
+    groups: readonly { name: string; items: readonly string[] }[];
+    /** Who enforces the rules, said where the rules are. */
+    engine: string;
+  };
   explorers: {
     title: string;
     sub: string;
     teams: readonly { name: string; desc: string }[];
   };
-  engine: { title: string; body: string };
-  status: { title: string; body: string; contactLabel: string };
+  closing: { title: string; status: string; cta: string };
   footer: {
     developer: string;
     contact: string;
@@ -43,7 +56,7 @@ export type Dictionary = {
 const dictionaries: Record<Locale, Dictionary> = {
   ko: {
     meta: {
-      title: "Ttush Push — 밀어서 떨어뜨리는 보드게임",
+      title: "Ttush Push: 밀어서 떨어뜨리는 보드게임",
       description:
         "5×5 발판 위에서 탐험가를 움직이고, 상대를 무너진 자리로 밀어 넣는 2인 추상 전략 보드게임. 규칙 판정은 Rust 엔진이 맡습니다.",
       ogAlt:
@@ -51,7 +64,8 @@ const dictionaries: Record<Locale, Dictionary> = {
     },
     hero: {
       tagline: "밀어내거나, 무너진 자리에 빠지거나",
-      sub: "발판 스물다섯 칸, 양쪽에 탐험가 두 명씩. 지나온 발판은 금이 가고, 두 번째로 떠나면 무너집니다. 상대를 그 구멍으로 밀어 넣고 세 라운드 중 두 라운드를 가져가세요.",
+      sub: "발판 스물다섯 칸. 지나온 발판은 금이 가고, 다시 떠나면 무너집니다. 상대를 그 구멍으로 밀어 넣으세요.",
+      cta: "테스트 참여 문의",
       boardCaption: "한 라운드가 끝나는 세 수",
       boardAlt: "5×5 발판 위에서 아주르 탐험가가 엠버 탐험가를 무너진 발판으로 밀어내는 장면.",
       boardStill: "엠버가 방금 자기 발판을 무너뜨렸고, 아주르가 바로 위 칸에 서 있습니다.",
@@ -67,14 +81,25 @@ const dictionaries: Record<Locale, Dictionary> = {
     },
     rules: {
       title: "규칙",
-      items: [
-        "자기 탐험가 두 명 중 하나를 골라 상하좌우로 한 칸 움직입니다.",
-        "상대가 선 칸으로 들어가면 그 탐험가를 같은 방향으로 한 칸 밀어냅니다. 그 뒤에 또 다른 탐험가가 서 있으면 애초에 둘 수 없는 수입니다.",
-        "무너진 자리로는 들어갈 수도, 밀려 들어갈 수도 없습니다. 다만 밀려난 탐험가가 무너진 자리나 판 밖으로 나가면 그대로 떨어집니다.",
-        "상대 탐험가를 떨어뜨리면 라운드를 가져갑니다. 상대가 둘 수 있는 수가 하나도 남지 않아도 마찬가지입니다.",
-        "방금 밀려난 탐험가는 자기를 민 상대를 곧바로 되밀 수 없습니다.",
-        "두 라운드를 먼저 가져가면 매치를 이깁니다. 다음 라운드는 직전 라운드를 진 쪽이 먼저 둡니다.",
+      groups: [
+        {
+          name: "한 수",
+          items: [
+            "자기 탐험가 두 명 중 하나를 골라 상하좌우로 한 칸 움직입니다. 무너진 자리로는 들어갈 수 없습니다.",
+            "상대가 선 칸으로 들어가면 그 탐험가를 같은 방향으로 한 칸 밀어냅니다. 그 뒤에 또 다른 탐험가가 서 있으면 애초에 둘 수 없는 수입니다.",
+            "방금 밀려난 탐험가는 자기를 민 상대를 곧바로 되밀 수 없습니다.",
+          ],
+        },
+        {
+          name: "승부",
+          items: [
+            "상대 탐험가를 무너진 자리나 판 밖으로 밀어내면 그 탐험가는 떨어지고 라운드가 끝납니다. 상대가 둘 수 있는 수가 하나도 남지 않아도 마찬가지입니다.",
+            "두 라운드를 먼저 가져가면 매치를 이깁니다. 다음 라운드는 직전 라운드를 진 쪽이 먼저 둡니다.",
+          ],
+        },
       ],
+      engine:
+        "위의 판정은 전부 Rust로 쓴 규칙 엔진이 계산합니다. 둘 수 있는 수인지, 밀어낸 결과가 어디로 가는지, 라운드가 언제 끝나는지까지. Flutter 화면은 그 결과를 그리기만 합니다.",
     },
     explorers: {
       title: "아주르와 엠버",
@@ -84,14 +109,11 @@ const dictionaries: Record<Locale, Dictionary> = {
         { name: "엠버", desc: "각진 두건과 각진 외투, 짙은 진홍색." },
       ],
     },
-    engine: {
-      title: "판정은 엔진이 합니다",
-      body: "둘 수 있는 수인지, 밀어낸 결과가 어디로 가는지, 라운드가 언제 끝나는지는 전부 Rust로 쓴 규칙 엔진이 계산합니다. Flutter 화면은 그 결과를 그리기만 하므로, 어느 쪽 화면에서도 같은 판이 나옵니다.",
-    },
-    status: {
-      title: "지금 상태",
-      body: "Android 비공개 테스트를 진행하고 있습니다. 아직 공개된 스토어 페이지가 없어서 이 페이지에는 스토어 링크를 걸지 않았습니다. 테스트에 참여하고 싶으시면 메일로 알려 주세요.",
-      contactLabel: "테스트 참여 문의",
+    closing: {
+      title: "아직 스토어에는 없습니다",
+      status:
+        "지금은 Android 비공개 테스트를 진행하고 있습니다. 공개된 스토어 페이지가 없어서 이 페이지에는 스토어 링크를 걸지 않았습니다. 먼저 해 보고 싶으시면 메일로 알려 주세요.",
+      cta: "테스트 참여 문의",
     },
     footer: {
       developer: "만든 사람: 유동민",
@@ -103,7 +125,7 @@ const dictionaries: Record<Locale, Dictionary> = {
   },
   en: {
     meta: {
-      title: "Ttush Push — a push-and-fall board game",
+      title: "Ttush Push: a push-and-fall board game",
       description:
         "A two-player abstract strategy board game. Move an explorer across twenty-five footholds and push the other side into the floor you broke. A Rust engine decides every rule.",
       ogAlt:
@@ -111,7 +133,8 @@ const dictionaries: Record<Locale, Dictionary> = {
     },
     hero: {
       tagline: "Push, or fall through the floor you broke",
-      sub: "Twenty-five footholds, two explorers a side. Every square you leave cracks, and the second time it collapses. Push the other side into the hole and take two rounds out of three.",
+      sub: "Twenty-five footholds. The square you leave cracks, and the next time it collapses. Push the other side into it.",
+      cta: "Ask to join",
       boardCaption: "The three moves that end a round",
       boardAlt:
         "On a five-by-five field of footholds, an Azure explorer pushes an Ember explorer into a collapsed square.",
@@ -129,14 +152,25 @@ const dictionaries: Record<Locale, Dictionary> = {
     },
     rules: {
       title: "Rules",
-      items: [
-        "Move one of your two explorers a single square up, down, left, or right.",
-        "Move onto a square the other side holds and that explorer is pushed one square the same way. If a third explorer stands behind it, the move is not available at all.",
-        "Nothing enters a collapsed square, by choice or by push. An explorer pushed into one, or off the edge of the board, falls.",
-        "Drop the other side's explorer and the round is yours. So is a round in which the other side has no legal move left.",
-        "An explorer that was just pushed cannot immediately push the same explorer back.",
-        "Two rounds win the match. Whoever lost the last round plays first in the next one.",
+      groups: [
+        {
+          name: "A move",
+          items: [
+            "Move one of your two explorers a single square up, down, left, or right. You cannot move onto a collapsed square.",
+            "Move onto a square the other side holds and that explorer is pushed one square the same way. If a third explorer stands behind it, the move is not available at all.",
+            "An explorer that was just pushed cannot immediately push the same explorer back.",
+          ],
+        },
+        {
+          name: "Winning",
+          items: [
+            "Push the other side's explorer onto a collapsed square, or off the edge of the board, and it falls. That round is yours. So is a round in which the other side has no legal move left.",
+            "Two rounds win the match. Whoever lost the last round plays first in the next one.",
+          ],
+        },
       ],
+      engine:
+        "Every ruling above is computed by a rules engine written in Rust: whether a move is available, where a push resolves to, when a round ends. The Flutter screen only draws what it returns.",
     },
     explorers: {
       title: "Azure and Ember",
@@ -146,14 +180,11 @@ const dictionaries: Record<Locale, Dictionary> = {
         { name: "Ember", desc: "Angular hood, squared coat, dark crimson." },
       ],
     },
-    engine: {
-      title: "The engine decides",
-      body: "Whether a move is available, where a push resolves to, and when a round ends are all computed by a rules engine written in Rust. The Flutter screen only draws what it returns, so both sides read the same position.",
-    },
-    status: {
-      title: "Where this is",
-      body: "In closed testing on Android. There is no public store page yet, so this page carries no store links. Write if you would like to join the test.",
-      contactLabel: "Ask to join the test",
+    closing: {
+      title: "Not on a store yet",
+      status:
+        "It is in closed testing on Android. There is no public store page, so this page carries no store links. Write if you want to play it early.",
+      cta: "Ask to join",
     },
     footer: {
       developer: "Built by Dongmin Yu",
