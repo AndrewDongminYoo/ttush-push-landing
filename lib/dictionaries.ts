@@ -68,7 +68,7 @@ const dictionaries: Record<Locale, Dictionary> = {
       cta: "테스트 참여 문의",
       boardCaption: "한 라운드가 끝나는 세 수",
       boardAlt: "5×5 발판 위에서 아주르 탐험가가 엠버 탐험가를 무너진 발판으로 밀어내는 장면.",
-      boardStill: "엠버가 방금 자기 발판을 무너뜨렸고, 아주르가 바로 위 칸에 서 있습니다.",
+      boardStill: "엠버가 방금 자기 발판을 무너뜨렸고, 아주르가 바로 옆 칸까지 다가와 있습니다.",
     },
     footholds: {
       title: "발판은 세 단계로 무너집니다",
@@ -139,7 +139,7 @@ const dictionaries: Record<Locale, Dictionary> = {
       boardAlt:
         "On a five-by-five field of footholds, an Azure explorer pushes an Ember explorer into a collapsed square.",
       boardStill:
-        "Ember has just collapsed its own foothold, and Azure stands one square above it.",
+        "Ember has just collapsed its own foothold, and Azure has closed to the next square.",
     },
     footholds: {
       title: "A foothold falls in three states",

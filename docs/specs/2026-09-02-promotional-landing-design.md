@@ -40,6 +40,26 @@ The first draft opened with five cracks and Azure to play, a position no rules e
 It rendered perfectly, which is the whole problem, so `board-replay.tsx` now checks the invariant on module load outside production builds and throws with the frame index and both counts.
 The check was proved by breaking frame 0 and watching `pnpm dev` fail before trusting it.
 
+## The board is drawn from the bottom up
+
+The engine's coordinates are not screen coordinates, and this page had them backwards for its whole first life.
+
+`_visualRowFor` in `lib/game/view/round_board.dart` is `rowCount - 1 - (y - minY)`, so the app draws engine `y = 0` at the **bottom** row.
+Azure starts there, which puts the side that moves first nearest the viewer.
+This page drew `y = 0` at the top, so the whole board was mirrored, and every sprite faced the opposite of the direction it had travelled.
+
+The same inversion is why `_visualFacingForTravel` in `lib/game/view/game_page.dart` looks upside down: a **larger** destination `y` selects the `up` sprite, because larger `y` is drawn higher on the screen.
+A pushed explorer takes the facing of its travel like any other, per `_updateFacingFor`; it does not keep the way it was looking.
+An explorer that has not moved keeps `initialExplorerFacing`, which is `up` for First and `down` for Second.
+
+Frames stay in engine coordinates and `visualRow` flips once at render, the way the app does, so the data can still be compared against the engine directly.
+A second module-load check asserts the facings: for every piece that changed square between consecutive frames, the stored facing must equal what `_visualFacingForTravel` would return.
+It was proved by flipping one facing back to its old value and watching `pnpm dev` name the piece, the square and both directions.
+
+Two consequences worth stating, because they look like regressions and are not.
+Azure now shows its back in the hero, since it is walking away from the viewer.
+And the accessibility text for the still frame no longer says Azure stands "above" Ember: after the flip that word is false on screen and ambiguous on the board, so both locales describe the distance instead.
+
 If the engine's move resolution changes, this sequence is a claim that has to be re-checked, the same way the privacy policy's network claim is.
 
 **Reduced motion holds frame 2.** The hole is open and Ember is cornered, which is the position the whole sequence exists to set up.
@@ -47,12 +67,12 @@ If the engine's move resolution changes, this sequence is a claim that has to be
 
 ## Art
 
-Every image is an asset the app ships.
-Nothing was generated for this page, and nothing should be: `assets/images/branding/README.md` in the app repository states that no image-model output was used for that identity, and adding some here would split it.
+Every image comes from an asset the app ships.
+The favicon follows the app's generated launcher artwork, but the landing page does not generate independent art.
 
 `public/board/` and `public/sky/` are copies from `ttush_push`.
 They are duplicates and can drift.
-Refresh them from the app repository when the sprites change; `tool/generate_brand_assets.sh` there regenerates the branded set that `app/icon.png` and `public/og.jpg` come from.
+Refresh them from the app repository when the sprites change; `tool/generate_brand_assets.sh` there regenerates the launcher icon that `app/icon.png` comes from.
 
 `public/og.jpg` was composed once with ImageMagick from the air-ruins painting and the app's own launch mark, with the wordmark set in the Poppins the app licenses.
 It carries no tagline, so one file serves both locales; the localized sentence lives in `og:description` instead.
@@ -106,6 +126,10 @@ There is no store link, so the only thing a visitor can do is ask to join the cl
 Rendered through the installed Chrome under `puppeteer-core` at 1440, 390 and 320 CSS pixels, in both locales.
 Read off the live page rather than judged by eye: zero em-dashes and zero en-dashes in visible text, no line carrying more than one middle dot, zero tracked-uppercase eyebrow labels, both calls to action on one line at 16.4:1 contrast with a 2px focus ring and a 0 radius, and five distinct `grid-template-columns` signatures across the five sections.
 The foothold descent was measured, not assumed: 0, 80 and 160 pixels of offset at 1440, collapsing to a plain stack at 390.
+
+The replay itself was adjudicated by the engine rather than by reading.
+A scratch copy of the `engine` crate ran the four setup moves and the three replayed ones through `apply_move`, asserting every tile and every piece against the frame the page draws, and finished on `Outcome::Winner(Player::First, WinReason::Knockout)`.
+The same harness rejects the frame set that shipped first, so the pass means something.
 No horizontal overflow and no clipped text at any width, no console error or warning, and no request that failed or answered 4xx.
 Both probes were proved before being trusted: the overflow probe against a deliberately over-wide node, the console probe against an injected error and a 404 sprite.
 The loop was sampled from the live DOM: four distinct frames under normal motion, exactly one under `prefers-reduced-motion: reduce`, with the decay counts matching the parity invariant at every frame.

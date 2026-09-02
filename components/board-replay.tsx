@@ -31,8 +31,13 @@ import { useEffect, useState, useSyncExternalStore } from "react";
  *   3. Azure moves (3,2) → (3,3), pushing Ember one square down into that
  *      hole. `resolve_move` reports a knockout, and the round is Azure's.
  *
- * Positions are (x, y) with y counting down from the top row, matching
- * `BoardConfig::rectangular` and the app's own board definition.
+ * Positions are (x, y) in the engine's own coordinates, matching
+ * `BoardConfig::rectangular`. They are NOT screen coordinates: the app draws
+ * y = 0 at the BOTTOM of the board, per `_visualRowFor` in
+ * `lib/game/view/round_board.dart`, so Azure starts nearest the viewer. This
+ * file keeps engine coordinates in the data and flips once at render, the way
+ * the app does. An earlier version drew y = 0 at the top, which mirrored the
+ * whole board and left every sprite facing the wrong way.
  */
 
 const SIZE = 5;
@@ -62,40 +67,41 @@ const frames: readonly Frame[] = [
   {
     tiles: [".x.x.", ".....", ".....", "...x.", "...x."],
     pieces: [
-      { id: "a1", team: "azure", x: 1, y: 1, facing: "down" },
-      { id: "a2", team: "azure", x: 3, y: 1, facing: "down" },
+      { id: "a1", team: "azure", x: 1, y: 1, facing: "up" },
+      { id: "a2", team: "azure", x: 3, y: 1, facing: "up" },
       { id: "e1", team: "ember", x: 1, y: 4, facing: "down" },
-      { id: "e2", team: "ember", x: 3, y: 4, facing: "down" },
+      { id: "e2", team: "ember", x: 3, y: 4, facing: "up" },
     ],
     hold: 1600,
   },
   {
     tiles: [".x.x.", "...x.", ".....", "...x.", "...x."],
     pieces: [
-      { id: "a1", team: "azure", x: 1, y: 1, facing: "down" },
-      { id: "a2", team: "azure", x: 3, y: 2, facing: "down" },
+      { id: "a1", team: "azure", x: 1, y: 1, facing: "up" },
+      { id: "a2", team: "azure", x: 3, y: 2, facing: "up" },
       { id: "e1", team: "ember", x: 1, y: 4, facing: "down" },
-      { id: "e2", team: "ember", x: 3, y: 4, facing: "down" },
+      { id: "e2", team: "ember", x: 3, y: 4, facing: "up" },
     ],
     hold: 1400,
   },
   {
     tiles: [".x.x.", "...x.", ".....", "...x.", "...o."],
     pieces: [
-      { id: "a1", team: "azure", x: 1, y: 1, facing: "down" },
-      { id: "a2", team: "azure", x: 3, y: 2, facing: "down" },
+      { id: "a1", team: "azure", x: 1, y: 1, facing: "up" },
+      { id: "a2", team: "azure", x: 3, y: 2, facing: "up" },
       { id: "e1", team: "ember", x: 1, y: 4, facing: "down" },
-      { id: "e2", team: "ember", x: 3, y: 3, facing: "up" },
+      { id: "e2", team: "ember", x: 3, y: 3, facing: "down" },
     ],
     hold: 1400,
   },
   {
     tiles: [".x.x.", "...x.", "...x.", "...x.", "...o."],
     pieces: [
-      { id: "a1", team: "azure", x: 1, y: 1, facing: "down" },
-      { id: "a2", team: "azure", x: 3, y: 3, facing: "down" },
+      { id: "a1", team: "azure", x: 1, y: 1, facing: "up" },
+      { id: "a2", team: "azure", x: 3, y: 3, facing: "up" },
       { id: "e1", team: "ember", x: 1, y: 4, facing: "down" },
-      // Pushed downward while still facing up: the shove came from behind.
+      // A pushed piece takes the facing of its travel like any other, per
+      // `_updateFacingFor`; it does not keep the way it was looking.
       { id: "e2", team: "ember", x: 3, y: 4, facing: "up", fallen: true },
     ],
     hold: 2600,
@@ -121,6 +127,30 @@ if (process.env.NODE_ENV !== "production") {
       );
     }
   });
+
+  // The second invariant, and the one that shipped wrong: a sprite faces the
+  // way it travelled, under the app's `_visualFacingForTravel`, where a larger
+  // destination y is the `up` sprite because the board is drawn with y = 0 at
+  // the bottom. Getting this backwards also renders perfectly.
+  const facingForTravel = (from: Piece, to: Piece): Facing | null => {
+    if (to.x > from.x) return "right";
+    if (to.x < from.x) return "left";
+    if (to.y > from.y) return "up";
+    if (to.y < from.y) return "down";
+    return null;
+  };
+  frames.slice(1).forEach((frame, i) => {
+    for (const piece of frame.pieces) {
+      const before = frames[i].pieces.find((it) => it.id === piece.id);
+      if (!before) continue;
+      const expected = facingForTravel(before, piece);
+      if (expected && piece.facing !== expected) {
+        throw new Error(
+          `board-replay frame ${i + 1}: ${piece.id} travelled to (${piece.x},${piece.y}) so it faces ${expected}, not ${piece.facing}`
+        );
+      }
+    }
+  });
 }
 
 /** The frame shown when the visitor asked for no motion: the hole is open and
@@ -136,6 +166,16 @@ const tileSrc = [
 function tileStateAt(frame: Frame, x: number, y: number): TileState {
   const cell = frame.tiles[y][x];
   return cell === "o" ? 2 : cell === "x" ? 1 : 0;
+}
+
+/**
+ * Engine row to screen row. The app's `_visualRowFor` is
+ * `rowCount - 1 - (y - minY)`, so engine y = 0 is the bottom row and Azure,
+ * which starts there, is the side nearest the viewer. Everything drawn below
+ * goes through this; nothing indexes a screen row directly.
+ */
+function visualRow(y: number): number {
+  return SIZE - 1 - y;
 }
 
 /**
@@ -207,7 +247,7 @@ export function BoardReplay({ label, stillLabel }: { label: string; stillLabel: 
             <div
               key={`${x}-${y}`}
               className="absolute h-1/5 w-1/5"
-              style={{ left: `${x * 20}%`, top: `${y * 20}%` }}
+              style={{ left: `${x * 20}%`, top: `${visualRow(y) * 20}%` }}
               aria-hidden
             >
               {tileSrc.map((src, layer) => (
@@ -237,9 +277,12 @@ export function BoardReplay({ label, stillLabel }: { label: string; stillLabel: 
           aria-hidden
           className={`piece ${piece.fallen ? "piece-fallen" : ""}`}
           style={{
+            // A knocked-out explorer sinks through the hole it is standing on
+            // rather than sliding off the board, because the hole is wherever
+            // the round put it and is not always at the near edge.
             transform: piece.fallen
-              ? `translate(${piece.x * 100}%, ${piece.y * 100 + 78}%) scale(0.5) rotate(14deg)`
-              : `translate(${piece.x * 100}%, ${piece.y * 100}%)`,
+              ? `translate(${piece.x * 100}%, ${visualRow(piece.y) * 100 + 16}%) scale(0.34) rotate(12deg)`
+              : `translate(${piece.x * 100}%, ${visualRow(piece.y) * 100}%)`,
           }}
         >
           <Image
