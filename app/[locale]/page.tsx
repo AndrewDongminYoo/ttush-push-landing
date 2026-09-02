@@ -173,7 +173,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           <div className="mt-10 grid gap-x-16 gap-y-14 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
             {dict.rules.groups.map((group) => (
               <div key={group.name}>
-                <h3 className="border-t border-edge pt-4 text-sm font-semibold text-ink">
+                {/* The group name recedes rather than competing: the hairline
+                    above it already marks the boundary, and one white heading
+                    per section is what makes that heading findable. */}
+                <h3 className="border-t border-edge pt-4 text-sm font-medium text-ink-dim">
                   {group.name}
                 </h3>
                 <ul className="mt-6 space-y-6">
