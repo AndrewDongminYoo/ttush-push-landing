@@ -1,5 +1,5 @@
 export const siteUrl = new URL(
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://ttush-push.donminzzi.kr",
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://ttush-push.donminzzi.kr"
 );
 
 export const androidPackage = "kr.donminzzi.ttush_push";

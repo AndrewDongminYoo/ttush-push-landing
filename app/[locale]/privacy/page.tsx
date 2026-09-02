@@ -9,18 +9,14 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
-export default async function PrivacyPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
+export default async function PrivacyPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale)) {
     notFound();
   }
   const source = await readFile(
     path.join(process.cwd(), "content", "legal", `privacy.${locale}.md`),
-    "utf8",
+    "utf8"
   );
 
   return (

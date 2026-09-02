@@ -7,6 +7,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ["", "/privacy"].map((suffix) => ({
       url: new URL(`/${locale}${suffix}`, siteUrl).toString(),
       lastModified: new Date(),
-    })),
+    }))
   );
 }

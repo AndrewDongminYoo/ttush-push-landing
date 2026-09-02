@@ -27,8 +27,7 @@ const dictionaries: Record<Locale, Dictionary> = {
       "먼저 두 라운드를 이기면 매치를 가져갑니다.",
     ],
     statusHeading: "지금 상태",
-    status:
-      "Android 비공개 테스트를 진행하고 있습니다. 공개 스토어 페이지는 아직 없습니다.",
+    status: "Android 비공개 테스트를 진행하고 있습니다. 공개 스토어 페이지는 아직 없습니다.",
     privacy: "개인정보처리방침",
   },
   en: {
@@ -44,8 +43,7 @@ const dictionaries: Record<Locale, Dictionary> = {
       "The first to two rounds takes the match.",
     ],
     statusHeading: "Where this is",
-    status:
-      "In closed testing on Android. There is no public store page yet.",
+    status: "In closed testing on Android. There is no public store page yet.",
     privacy: "Privacy policy",
   },
 };
