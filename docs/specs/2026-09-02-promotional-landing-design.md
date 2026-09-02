@@ -42,7 +42,7 @@ The check was proved by breaking frame 0 and watching `pnpm dev` fail before tru
 
 If the engine's move resolution changes, this sequence is a claim that has to be re-checked, the same way the privacy policy's network claim is.
 
-**Reduced motion holds frame 2** — the hole is open and Ember is cornered, which is the position the whole sequence exists to set up.
+**Reduced motion holds frame 2.** The hole is open and Ember is cornered, which is the position the whole sequence exists to set up.
 `usePrefersReducedMotion` subscribes through `useSyncExternalStore` rather than reading the media query once in an effect, so the server renders that frame and a visitor who changes the setting is not left on the wrong branch.
 
 ## Art
@@ -71,16 +71,41 @@ Korean is the default locale and Poppins has no Hangul, so Gothic A1 carries it:
 
 ## Structure
 
-One bold element, the rest quiet.
+One bold element, the rest quiet, and no two sections built the same way.
 
-- The foothold triptych is a legend, not decoration: the rules below it use the words it defines.
-- The rules are separated by hairlines and carry no step numbers, because they are six statements rather than a sequence.
-- The explorer turnaround is the whole four-direction sprite set, shown because the facing is a real rule: the sprite looks the way it just moved. The accompanying copy names the silhouette difference, which is what tells the teams apart when the colours cannot.
-- The page closes on two quiet statements side by side: what decides the rules, and what a visitor can do today.
+The first version of this page failed that last clause badly: every content section was `max-w-6xl px-6 py-20` wrapping an n-column grid, four times, so the page read as a document rather than as a designed thing. The five sections now use five layout families, checked against the computed `grid-template-columns` of each rather than by eye.
+
+1. **Hero**, asymmetric split: copy left, the board right, over the sky.
+1. **Footholds**, a descent. The three states step down the page by 0, 80 and 160 pixels as they decay, so the offset carries the meaning instead of decorating it. Three equal columns with no offset would be the generic feature row; the stagger is what it is not. Mobile drops the offsets and reads as a plain sequence.
+1. **Rules**, two groups at an asymmetric measure. Reference material, so its heading is deliberately the smallest on the page: it is a thing you consult, not a thing you are sold. Each group carries one hairline; an earlier version put a border under all six rows, which is the spec-table shape that makes a page look unedited.
+1. **Explorers**, a full-bleed band of the whole eight-sprite set, shown because the facing is a real rule: the sprite looks the way it just moved. The copy names the silhouette difference, which is what tells the teams apart when the colours cannot.
+1. **Closing**, full-bleed sky again, one statement and the action. The page opens and closes in the ruins.
+
+The sky appears exactly twice, at those two ends, on different crops of the same painting. Spending it on every section was considered and rejected: carrying six sections of body copy would need a scrim heavy enough to leave the art dimmer everywhere than it is in the hero now, and the contrast between the ruins and the reading ground is what makes either one land.
+
+## The rules said two contradictory things
+
+The rules used to open with "nothing enters a collapsed square, by choice or by push", then immediately add "an explorer pushed into one falls". Both cannot be true, and the engine is clear about which is: `resolve_move` rejects the _mover's_ destination with `IllegalMove::Hole` before any push is resolved, while a _pushed_ piece landing on a hole is not rejected at all, it is the `knockout` branch that ends the round.
+
+So the sentence was two claims welded together, a legality constraint and a termination condition. They are now in different groups, and the knockout half merged into the win rule that already said the same thing. Six rules became five, and the duplicate went away rather than moving.
+
+## Locks
+
+Three page-wide decisions that a later change would break silently, so they are written down rather than left to be inferred:
+
+- **Theme.** Dark, single mode, no section inverting. The app's surface is `#0b0d12` and every asset is lit for a night sky, so a light mode would show the product in a light it never has.
+- **Shape.** Radius 0 everywhere, including the one button. The game's world is cut stone and the board is square; a rounded control would be the only soft edge on the site.
+- **Accent.** Azure and Ember are spoken for by the two teams, so the page has no third accent. The call to action is off-white on the page's own near-black at 16.4:1 rather than a fourth colour.
+
+## The one action
+
+There is no store link, so the only thing a visitor can do is ask to join the closed test. That used to sit eight screens down. It is now the hero's call to action and the closing one, under a single label in each locale, because two labels for one intent is how a page ends up with "Get in touch" and "Let's talk" on the same screen.
 
 ## Verified
 
 Rendered through the installed Chrome under `puppeteer-core` at 1440, 390 and 320 CSS pixels, in both locales.
+Read off the live page rather than judged by eye: zero em-dashes and zero en-dashes in visible text, no line carrying more than one middle dot, zero tracked-uppercase eyebrow labels, both calls to action on one line at 16.4:1 contrast with a 2px focus ring and a 0 radius, and five distinct `grid-template-columns` signatures across the five sections.
+The foothold descent was measured, not assumed: 0, 80 and 160 pixels of offset at 1440, collapsing to a plain stack at 390.
 No horizontal overflow and no clipped text at any width, no console error or warning, and no request that failed or answered 4xx.
 Both probes were proved before being trusted: the overflow probe against a deliberately over-wide node, the console probe against an injected error and a 404 sprite.
 The loop was sampled from the live DOM: four distinct frames under normal motion, exactly one under `prefers-reduced-motion: reduce`, with the decay counts matching the parity invariant at every frame.
