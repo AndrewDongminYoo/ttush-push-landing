@@ -29,6 +29,16 @@ So the three moves were worked out by hand against `engine/src/lib.rs` in `Andre
 1. Azure moves `(3,2)` to `(3,3)`, pushing Ember down into that hole. `resolve_move` reports a knockout and the round is Azure's.
 
 The opening position is part-way through a round rather than at the reset, because a board that already carries damage reads as a game in progress and needs fewer moves to reach the payoff.
+That freedom comes with an arithmetic constraint that is easy to miss, and the first version of these frames missed it.
+
+`apply_resolved_move` decays exactly one square per move, always the mover's departure and never the pushed piece's origin, and turns alternate from First.
+So **the decay steps on the board equal the moves played, and Azure is on turn only after an even count.**
+Frame 0 shows four cracks, reachable as Azure `(1,0)→(1,1)`, Ember `(3,4)→(3,3)`, Azure `(3,0)→(3,1)`, Ember `(3,3)→(3,4)`, which leaves Azure to play.
+Ember's second explorer never moves, so it keeps `initialExplorerFacing`: `down` for Second, `up` for First.
+
+The first draft opened with five cracks and Azure to play, a position no rules engine could produce.
+It rendered perfectly, which is the whole problem, so `board-replay.tsx` now checks the invariant on module load outside production builds and throws with the frame index and both counts.
+The check was proved by breaking frame 0 and watching `pnpm dev` fail before trusting it.
 
 If the engine's move resolution changes, this sequence is a claim that has to be re-checked, the same way the privacy policy's network claim is.
 
@@ -70,9 +80,11 @@ One bold element, the rest quiet.
 
 ## Verified
 
-Rendered through the installed Chrome under `puppeteer-core` at 1440, 390 and 320 CSS pixels, in both locales, with the overflow probe proved against a deliberately over-wide node first.
-No horizontal overflow and no clipped text at any width.
-The loop was sampled from the live DOM: four distinct frames under normal motion, exactly one under `prefers-reduced-motion: reduce`.
+Rendered through the installed Chrome under `puppeteer-core` at 1440, 390 and 320 CSS pixels, in both locales.
+No horizontal overflow and no clipped text at any width, no console error or warning, and no request that failed or answered 4xx.
+Both probes were proved before being trusted: the overflow probe against a deliberately over-wide node, the console probe against an injected error and a 404 sprite.
+The loop was sampled from the live DOM: four distinct frames under normal motion, exactly one under `prefers-reduced-motion: reduce`, with the decay counts matching the parity invariant at every frame.
+`og:image` resolves absolute, matches the JSON-LD `image`, and `/og.jpg` answers 200.
 
 macOS Chrome refuses a window narrower than 500 pixels and crops the screenshot to whatever `--window-size` asked for, so a plain headless capture at 390 shows a 500-pixel layout in a 390-pixel image and invents an overflow bug that is not there.
 Drive the viewport through the DevTools protocol, not the window size.

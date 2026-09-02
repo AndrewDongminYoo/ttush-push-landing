@@ -11,7 +11,19 @@ import { useEffect, useState, useSyncExternalStore } from "react";
  * is only one — so the sequence below was worked out by hand against
  * `engine/src/lib.rs` in AndrewDongminYoo/ttush_push and then frozen.
  *
- * The moves, from a position part-way through a round with Azure to play:
+ * Frame 0 opens part-way through a round. `apply_resolved_move` decays exactly
+ * one square per move — the mover's departure, never the pushed piece's origin
+ * — and turns alternate from First, so the opening position has to be reachable
+ * in as many moves as it shows cracks, with Azure on turn after an even count.
+ * These four get there:
+ *
+ *   Azure (1,0) → (1,1) · Ember (3,4) → (3,3) · Azure (3,0) → (3,1) ·
+ *   Ember (3,3) → (3,4)
+ *
+ * Ember's second explorer never moves, so it keeps `initialExplorerFacing`,
+ * which is `down` for Second and `up` for First.
+ *
+ * The three moves the loop then plays:
  *
  *   1. Azure moves (3,1) → (3,2). Its departure square cracks.
  *   2. Ember moves (3,4) → (3,3). Its departure square was already cracked,
@@ -48,47 +60,68 @@ type Frame = {
 
 const frames: readonly Frame[] = [
   {
-    tiles: [".x.x.", ".....", ".....", "...x.", ".x.x."],
+    tiles: [".x.x.", ".....", ".....", "...x.", "...x."],
     pieces: [
       { id: "a1", team: "azure", x: 1, y: 1, facing: "down" },
       { id: "a2", team: "azure", x: 3, y: 1, facing: "down" },
-      { id: "e1", team: "ember", x: 1, y: 3, facing: "up" },
-      { id: "e2", team: "ember", x: 3, y: 4, facing: "up" },
+      { id: "e1", team: "ember", x: 1, y: 4, facing: "down" },
+      { id: "e2", team: "ember", x: 3, y: 4, facing: "down" },
     ],
     hold: 1600,
   },
   {
-    tiles: [".x.x.", "...x.", ".....", "...x.", ".x.x."],
+    tiles: [".x.x.", "...x.", ".....", "...x.", "...x."],
     pieces: [
       { id: "a1", team: "azure", x: 1, y: 1, facing: "down" },
       { id: "a2", team: "azure", x: 3, y: 2, facing: "down" },
-      { id: "e1", team: "ember", x: 1, y: 3, facing: "up" },
-      { id: "e2", team: "ember", x: 3, y: 4, facing: "up" },
+      { id: "e1", team: "ember", x: 1, y: 4, facing: "down" },
+      { id: "e2", team: "ember", x: 3, y: 4, facing: "down" },
     ],
     hold: 1400,
   },
   {
-    tiles: [".x.x.", "...x.", ".....", "...x.", ".x.o."],
+    tiles: [".x.x.", "...x.", ".....", "...x.", "...o."],
     pieces: [
       { id: "a1", team: "azure", x: 1, y: 1, facing: "down" },
       { id: "a2", team: "azure", x: 3, y: 2, facing: "down" },
-      { id: "e1", team: "ember", x: 1, y: 3, facing: "up" },
+      { id: "e1", team: "ember", x: 1, y: 4, facing: "down" },
       { id: "e2", team: "ember", x: 3, y: 3, facing: "up" },
     ],
     hold: 1400,
   },
   {
-    tiles: [".x.x.", "...x.", "...x.", "...x.", ".x.o."],
+    tiles: [".x.x.", "...x.", "...x.", "...x.", "...o."],
     pieces: [
       { id: "a1", team: "azure", x: 1, y: 1, facing: "down" },
       { id: "a2", team: "azure", x: 3, y: 3, facing: "down" },
-      { id: "e1", team: "ember", x: 1, y: 3, facing: "up" },
+      { id: "e1", team: "ember", x: 1, y: 4, facing: "down" },
       // Pushed downward while still facing up: the shove came from behind.
       { id: "e2", team: "ember", x: 3, y: 4, facing: "up", fallen: true },
     ],
     hold: 2600,
   },
 ];
+
+/** How many moves the opening position took to reach. Even, so Azure is on
+ *  turn in frame 0; each later frame adds exactly one move. */
+const OPENING_MOVES = 4;
+
+if (process.env.NODE_ENV !== "production") {
+  // The invariant a hand-written frame set breaks silently: one foothold decays
+  // per move, so decay steps on the board equal moves played, and Azure is on
+  // turn only after an even count. Getting this wrong renders perfectly and
+  // simply depicts a position no rules engine could produce.
+  const decaySteps = (frame: Frame) =>
+    [...frame.tiles.join("")].reduce((n, c) => n + (c === "o" ? 2 : c === "x" ? 1 : 0), 0);
+  frames.forEach((frame, i) => {
+    const steps = decaySteps(frame);
+    if (steps !== OPENING_MOVES + i) {
+      throw new Error(
+        `board-replay frame ${i} shows ${steps} decay steps but ${OPENING_MOVES + i} moves have been played`
+      );
+    }
+  });
+}
 
 /** The frame shown when the visitor asked for no motion: the hole is open and
  *  Ember is cornered, which is the position the whole sequence exists to set up. */
