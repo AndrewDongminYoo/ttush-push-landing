@@ -1,12 +1,27 @@
-import { readFile } from "node:fs/promises";
-import path from "node:path";
-import Markdown from "react-markdown";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { PolicyLayout } from "@/components/policy-layout";
+import { getDictionary } from "@/lib/dictionaries";
 import { isLocale, locales } from "@/lib/i18n";
-import { SiteFooter } from "@/components/site-footer";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  if (!isLocale(locale)) return {};
+  return {
+    title: getDictionary(locale).footer.privacy,
+    alternates: {
+      canonical: `/${locale}/privacy`,
+      languages: { ko: "/ko/privacy", en: "/en/privacy", "x-default": "/ko/privacy" },
+    },
+  };
 }
 
 export default async function PrivacyPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -14,15 +29,5 @@ export default async function PrivacyPage({ params }: { params: Promise<{ locale
   if (!isLocale(locale)) {
     notFound();
   }
-  const source = await readFile(
-    path.join(process.cwd(), "content", "legal", `privacy.${locale}.md`),
-    "utf8"
-  );
-
-  return (
-    <main className="prose prose-invert max-w-none">
-      <Markdown>{source}</Markdown>
-      <SiteFooter locale={locale} />
-    </main>
-  );
+  return <PolicyLayout locale={locale} doc="privacy" />;
 }
