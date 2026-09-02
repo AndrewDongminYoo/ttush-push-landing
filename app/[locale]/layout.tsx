@@ -20,10 +20,19 @@ const poppins = Poppins({
 // primary reading face for most visitors, not a fallback. Gothic A1 is
 // geometric where Noto Sans KR is humanist, which is what keeps it next to
 // Poppins rather than beside it.
+// `preload: false` is load-bearing, not a tuning knob. Google splits a Korean
+// face into roughly a hundred unicode-range slices per weight, and next/font
+// self-hosts and preloads every slice of the declared subsets: four weights of
+// Gothic A1 emitted 291 preload links and pulled 2.3 MB of font files on every
+// page, including the English one, which contains no Hangul at all. Left to
+// load on demand the browser fetches only the slices whose glyphs are actually
+// on the page. Poppins stays preloaded: it is latin-only, a handful of files,
+// and the first face both locales paint.
 const gothicA1 = Gothic_A1({
   variable: "--font-gothic-a1",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
+  preload: false,
 });
 
 export function generateStaticParams() {

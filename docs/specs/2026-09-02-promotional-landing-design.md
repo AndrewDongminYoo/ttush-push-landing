@@ -89,6 +89,16 @@ Poppins is the face the app ships and licenses under the OFL.
 Korean is the default locale and Poppins has no Hangul, so Gothic A1 carries it: geometric where Noto Sans KR is humanist, which is what keeps it next to Poppins rather than beside it.
 `word-break: keep-all` with `overflow-wrap: break-word` keeps 어절 whole while still breaking a word that cannot fit at all.
 
+**Gothic A1 must not be preloaded, and that is a correctness constraint rather than a tuning preference.**
+Google splits a Korean face into roughly a hundred unicode-range slices per weight, and next/font self-hosts and preloads every slice of the declared subsets.
+Four weights of Gothic A1 emitted **291 preload links** and pulled **2.3 MB of font files on every page load, in both locales**, including the English page, which contains no Hangul at all.
+With `preload: false` the browser fetches only the slices whose glyphs are on the page: 11 preload links, 266 KB across 34 files on `/ko`, and 46 KB across 6 files on `/en`.
+Cumulative layout shift stayed at 0 in both locales, because next/font still declares the metric-matched `Gothic A1 Fallback`, and `document.fonts.check` still reports Hangul covered on `/ko`.
+Poppins keeps its preload: it is latin-only, a handful of files, and the first face both locales paint.
+
+Note that Gothic A1 has no `korean` entry in next/font's `font-data.json`, so `subsets` cannot express what is actually needed here.
+The declared `latin` subset governs preloading only; the generated `@font-face` rules carry the Hangul ranges regardless, which is why the font works at all and why preloading it was so expensive.
+
 ## Structure
 
 One bold element, the rest quiet, and no two sections built the same way.
