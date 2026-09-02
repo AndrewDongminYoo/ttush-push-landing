@@ -93,7 +93,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           src="/sky/air-ruins-twilight.png"
           alt=""
           fill
-          priority
+          // `preload` rather than `priority`: Next 16 deprecates the latter in
+          // ImageProps and refuses to accept both.
+          preload
           sizes="100vw"
           // The horizon sits about two thirds down the painting; pulling the
           // crop to it keeps the warm band of cloud in frame at every height.
@@ -248,6 +250,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           alt=""
           fill
           sizes="100vw"
+          // Eager despite sitting below the fold, and it costs nothing: this is
+          // the same optimized URL the hero already preloaded, so no second
+          // request is made either way. Next registers every image in one map
+          // keyed by resolved URL, so leaving this one lazy overwrites the
+          // hero's record and makes Next report the hero as a lazy LCP image
+          // that it is not.
+          loading="eager"
           // A higher crop than the hero's, so the bookend is the same place
           // seen from further up rather than the same picture again.
           className="-z-10 object-cover object-[center_18%]"
