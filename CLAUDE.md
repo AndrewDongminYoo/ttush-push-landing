@@ -23,7 +23,9 @@ That split is deliberate. Files under `.well-known` only mean something when ser
 
 Legal text is Markdown under `content/legal`, read at build time and rendered through `react-markdown` by `components/policy-layout.tsx`. Keep it Markdown: it is the form a store reviewer and a person both read, and it diffs. Its heading and list styles live in the `.policy` block in `app/globals.css`, because Tailwind's preflight strips them and this project carries no typography plugin.
 
-`public/board` and `public/sky` are copies of the app's sprites and background, and `app/icon.png` and `public/og.jpg` derive from its branded launch assets. Nothing on this page is generated art; the app's `assets/images/branding/README.md` states that identity uses no image-model output, and adding some here would split it.
+`public/board` and `public/sky` are copies of the app's sprites and background, and `app/icon.png` and `public/og.jpg` derive from its branded assets.
+`app/icon.png` follows the app's generated launcher artwork, while `public/og.jpg` remains a deterministic composite of the app's own assets.
+Refresh shared assets from the app repository instead of creating independent landing-page art.
 
 ## Claims about the app must be verified against the app
 
