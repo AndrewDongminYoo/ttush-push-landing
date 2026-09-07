@@ -72,8 +72,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     image: new URL(ogImage.path, siteUrl).toString(),
     inLanguage: ["ko", "en"],
     genre: "Abstract strategy",
-    gamePlatform: ["Android"],
-    numberOfPlayers: { "@type": "QuantitativeValue", value: 2 },
+    gamePlatform: ["Android", "iOS"],
+    // A range rather than a single value: one player against an AI level, or
+    // two sharing the device. `value` would assert that two are required.
+    numberOfPlayers: { "@type": "QuantitativeValue", minValue: 1, maxValue: 2 },
     applicationCategory: "Game",
     author: { "@type": "Person", name: "Dongmin Yu", email: "ydm2790@gmail.com" },
   };
