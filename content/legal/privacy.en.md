@@ -1,6 +1,6 @@
 # Privacy Policy
 
-_Last updated: 2 September 2026_
+_Last updated: 7 September 2026_
 
 Ttush Push does not collect, transmit, or store any personal information.
 
@@ -8,7 +8,9 @@ Ttush Push does not collect, transmit, or store any personal information.
 
 This is not a promise about restraint; it is a property of the build. The released Android app declares no `android.permission.INTERNET`, so the operating system does not permit it to open a network connection at all. The permission appears only in the debug and profile builds, which the Flutter tooling uses for hot reload during development and which are never published.
 
-There is therefore no analytics, no crash reporting, no advertising, and no third-party SDK receiving anything about you.
+iOS has no equivalent permission to withhold, so on iPhone the same claim rests on what the app is made of rather than on what the system refuses. The app bundles no networking library, and no part of it opens a connection. That is checkable rather than a promise: the [source is public](https://github.com/AndrewDongminYoo/ttush_push), and the dependency list, the rules engine's own manifest, and the absence of any HTTP or socket call in the app code all carry it.
+
+There is therefore no analytics, no crash reporting, no advertising, and no third-party SDK receiving anything about you, on either platform.
 
 ## What is stored on your device
 

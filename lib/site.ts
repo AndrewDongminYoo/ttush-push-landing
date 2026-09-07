@@ -10,9 +10,10 @@ export const androidPackage = "kr.donminzzi.ttush_push";
 // JSON-LD needs to name the same image the meta tags do.
 export const ogImage = { path: "/og.jpg", width: 1200, height: 630 } as const;
 
-// Deliberately not exported as links yet. The app is a draft on Google Play
-// with an internal testing track only, and there is no App Store record at
-// all, so both of these would 404 for a visitor. Add them, and the /download
-// redirect in next.config.ts, when a store page actually exists.
+// Deliberately not exported as links yet. Google Play is in closed testing on
+// the way to a production listing, and the App Store submission is in review
+// after one rejection, so neither store has a public page and both of these
+// would 404 for a visitor. Add them, and the /download redirect in
+// next.config.ts, when a store page actually exists.
 export const playStoreUrl: string | null = null;
 export const appStoreUrl: string | null = null;
