@@ -17,6 +17,14 @@ import type { Locale } from "./i18n";
 // and a termination condition are different things, so they sit in different
 // groups. An earlier version of this file welded them into one sentence that
 // contradicted itself.
+//
+// The decay rule is the other place these sentences have been wrong.
+// `apply_resolved_move` steps down exactly one tile per move: the square the
+// mover departed, never the square a pushed piece vacated. "Each time an
+// explorer leaves a square" over-states that, because a pushed explorer leaves
+// one too and it stays intact. `components/board-replay.tsx` already encoded
+// the rule correctly while this file did not, so when the two disagree, the
+// replay is the one that was checked against the engine.
 export type Dictionary = {
   meta: { title: string; description: string; ogAlt: string };
   hero: {
@@ -58,7 +66,7 @@ const dictionaries: Record<Locale, Dictionary> = {
     meta: {
       title: "Ttush Push: 밀어서 떨어뜨리는 보드게임",
       description:
-        "5×5 발판 위에서 탐험가를 움직이고, 상대를 무너진 자리로 밀어 넣는 2인 추상 전략 보드게임. 규칙 판정은 Rust 엔진이 맡습니다.",
+        "5×5 발판 위에서 탐험가를 움직이고, 상대를 무너진 자리로 밀어 넣는 추상 전략 보드게임. 한 기기로 둘이 두거나 네 단계의 AI를 상대할 수 있고, 규칙 판정은 Rust 엔진이 맡습니다.",
       ogAlt:
         "황혼의 공중 폐허를 배경으로, 아주르와 엠버 탐험가가 하나의 돌 발판 위에 서 있는 Ttush Push 대표 이미지.",
     },
@@ -72,11 +80,11 @@ const dictionaries: Record<Locale, Dictionary> = {
     },
     footholds: {
       title: "발판은 세 단계로 무너집니다",
-      sub: "탐험가가 떠날 때마다 그 발판이 한 단계씩 내려앉습니다. 들어설 때가 아니라 떠날 때입니다.",
+      sub: "탐험가가 자기 차례에 딛고 나갈 때마다 그 발판이 한 단계씩 내려앉습니다. 들어설 때가 아니라 나갈 때이고, 밀려난 탐험가가 비운 자리는 그대로 남습니다.",
       states: [
-        { name: "멀쩡한 발판", desc: "아직 아무도 떠나지 않은 칸." },
-        { name: "금이 간 발판", desc: "한 번 떠난 칸. 아직 딛고 설 수 있습니다." },
-        { name: "무너진 발판", desc: "두 번 떠난 칸. 이제 아무도 들어갈 수 없습니다." },
+        { name: "멀쩡한 발판", desc: "아직 아무도 딛고 나가지 않은 칸." },
+        { name: "금이 간 발판", desc: "한 번 딛고 나간 칸. 아직 올라설 수 있습니다." },
+        { name: "무너진 발판", desc: "두 번 딛고 나간 칸. 이제 아무도 들어갈 수 없습니다." },
       ],
     },
     rules: {
@@ -99,7 +107,7 @@ const dictionaries: Record<Locale, Dictionary> = {
         },
       ],
       engine:
-        "위의 판정은 전부 Rust로 쓴 규칙 엔진이 계산합니다. 둘 수 있는 수인지, 밀어낸 결과가 어디로 가는지, 라운드가 언제 끝나는지까지. Flutter 화면은 그 결과를 그리기만 합니다.",
+        "위의 판정은 전부 Rust로 쓴 규칙 엔진이 계산합니다. 둘 수 있는 수인지, 밀어낸 결과가 어디로 가는지, 라운드가 언제 끝나는지까지. 혼자 둘 때 두 번째 자리를 맡는 쉬움·보통·어려움·전문가 네 단계의 AI도 같은 엔진이 고릅니다. Flutter 화면은 그 결과를 그리기만 합니다.",
     },
     explorers: {
       title: "아주르와 엠버",
@@ -112,7 +120,7 @@ const dictionaries: Record<Locale, Dictionary> = {
     closing: {
       title: "아직 스토어에는 없습니다",
       status:
-        "지금은 Android 비공개 테스트를 진행하고 있습니다. 공개된 스토어 페이지가 없어서 이 페이지에는 스토어 링크를 걸지 않았습니다. 먼저 해 보고 싶으시면 메일로 알려 주세요.",
+        "Google Play는 프로덕션 전환을 앞둔 비공개 테스트 중이고, App Store는 심사에 다시 올라가 있습니다. 어느 쪽도 아직 공개된 스토어 페이지가 없어서 이 페이지에는 스토어 링크를 걸지 않았습니다. 먼저 해 보고 싶으시면 메일로 알려 주세요.",
       cta: "테스트 참여 문의",
     },
     footer: {
@@ -127,7 +135,7 @@ const dictionaries: Record<Locale, Dictionary> = {
     meta: {
       title: "Ttush Push: a push-and-fall board game",
       description:
-        "A two-player abstract strategy board game. Move an explorer across twenty-five footholds and push the other side into the floor you broke. A Rust engine decides every rule.",
+        "An abstract strategy board game for one or two players. Move an explorer across twenty-five footholds and push the other side into the floor you broke. Share one device, or let four AI levels take the second seat. A Rust engine decides every rule.",
       ogAlt:
         "Ttush Push, over the twilight sky of the ancient air ruins: one stone foothold carrying the Azure and Ember explorers.",
     },
@@ -143,11 +151,11 @@ const dictionaries: Record<Locale, Dictionary> = {
     },
     footholds: {
       title: "A foothold falls in three states",
-      sub: "Each time an explorer leaves a square, that square drops one state. It is leaving that breaks it, not arriving.",
+      sub: "Each time an explorer moves off a square on its own turn, that square drops one state. It is leaving that breaks it, not arriving, and the square a pushed explorer vacates is left exactly as it was.",
       states: [
-        { name: "Intact", desc: "Nobody has left this square yet." },
-        { name: "Cracked", desc: "Left once. It still carries an explorer." },
-        { name: "Collapsed", desc: "Left twice. Nothing can enter it now." },
+        { name: "Intact", desc: "Nobody has moved off this square yet." },
+        { name: "Cracked", desc: "Moved off once. It still carries an explorer." },
+        { name: "Collapsed", desc: "Moved off twice. Nothing can enter it now." },
       ],
     },
     rules: {
@@ -170,7 +178,7 @@ const dictionaries: Record<Locale, Dictionary> = {
         },
       ],
       engine:
-        "Every ruling above is computed by a rules engine written in Rust: whether a move is available, where a push resolves to, when a round ends. The Flutter screen only draws what it returns.",
+        "Every ruling above is computed by a rules engine written in Rust: whether a move is available, where a push resolves to, when a round ends. The same engine picks the moves for the four AI levels — Easy, Normal, Hard and Expert — that take the second seat when you play alone. The Flutter screen only draws what it returns.",
     },
     explorers: {
       title: "Azure and Ember",
@@ -183,7 +191,7 @@ const dictionaries: Record<Locale, Dictionary> = {
     closing: {
       title: "Not on a store yet",
       status:
-        "It is in closed testing on Android. There is no public store page, so this page carries no store links. Write if you want to play it early.",
+        "Google Play is in closed testing on the way to a production listing, and the App Store submission is back in review. Neither has a public store page yet, so this page carries no store links. Write if you want to play it early.",
       cta: "Ask to join",
     },
     footer: {

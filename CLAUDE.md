@@ -32,7 +32,7 @@ Refresh shared assets from the app repository instead of creating independent la
 This page describes software in another repository, which is exactly the shape that goes stale. Three rules:
 
 - Before changing a sentence about what the game does, check it against `ttush_push` at `main`, not against this page's previous wording.
-- The privacy policy's central claim — that the app cannot reach the network — rests on the released Android bundle declaring no `android.permission.INTERNET`. That is checkable: read `base/manifest/AndroidManifest.xml` out of the AAB. If a future version adds the permission, this policy is wrong the moment that version ships.
+- The privacy policy's central claim — that the app cannot reach the network — rests on a different check per platform, and both are named in the policy itself. On Android it is the released bundle declaring no `android.permission.INTERNET`: read `base/manifest/AndroidManifest.xml` out of the AAB. iOS has no such permission, so there the claim rests on the app carrying no networking dependency and no HTTP or socket call, which is read out of `pubspec.yaml`, `engine/Cargo.toml` and `lib/` in the app repository. Either check failing makes the policy wrong the moment that version ships.
 - The hero board in `components/board-replay.tsx` is a claim too. Its four frames were derived by hand from `engine/src/lib.rs`, so a change to `resolve_move` or to the tile decay makes them wrong. Do not replace them with a simulation: a second rules authority on this page contradicts the sentence the page itself prints about the engine.
 
 ## Do not invent
