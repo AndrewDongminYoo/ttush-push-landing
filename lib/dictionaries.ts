@@ -51,7 +51,7 @@ export type Dictionary = {
     sub: string;
     teams: readonly { name: string; desc: string }[];
   };
-  closing: { title: string; status: string; cta: string };
+  closing: { title: string; status: string; appStore: string; cta: string };
   footer: {
     developer: string;
     contact: string;
@@ -118,9 +118,10 @@ const dictionaries: Record<Locale, Dictionary> = {
       ],
     },
     closing: {
-      title: "아직 스토어에는 없습니다",
+      title: "App Store에서 받을 수 있습니다",
       status:
-        "Google Play는 프로덕션 전환을 앞둔 비공개 테스트 중이고, App Store는 심사에 다시 올라가 있습니다. 어느 쪽도 아직 공개된 스토어 페이지가 없어서 이 페이지에는 스토어 링크를 걸지 않았습니다. 먼저 해 보고 싶으시면 메일로 알려 주세요.",
+        "iPhone과 iPad에서는 App Store에서 받을 수 있습니다. Google Play는 프로덕션 전환을 앞둔 비공개 테스트 중이라 아직 공개된 스토어 페이지가 없습니다. Android에서 먼저 해 보고 싶으시면 메일로 알려 주세요.",
+      appStore: "App Store에서 보기",
       cta: "테스트 참여 문의",
     },
     footer: {
@@ -189,9 +190,10 @@ const dictionaries: Record<Locale, Dictionary> = {
       ],
     },
     closing: {
-      title: "Not on a store yet",
+      title: "On the App Store",
       status:
-        "Google Play is in closed testing on the way to a production listing, and the App Store submission is back in review. Neither has a public store page yet, so this page carries no store links. Write if you want to play it early.",
+        "On iPhone and iPad, get it from the App Store. Google Play is in closed testing on the way to a production listing and has no public store page yet, so write if you want to play it early on Android.",
+      appStore: "View on the App Store",
       cta: "Ask to join",
     },
     footer: {
