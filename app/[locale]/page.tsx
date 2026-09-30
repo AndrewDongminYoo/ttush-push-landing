@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { BoardReplay } from "@/components/board-replay";
 import { getDictionary } from "@/lib/dictionaries";
 import { isLocale } from "@/lib/i18n";
-import { ogImage, siteUrl } from "@/lib/site";
+import { appStoreUrl, ogImage, siteUrl } from "@/lib/site";
 
 const facings = ["up", "left", "right", "down"] as const;
 const teamIds = ["azure", "ember"] as const;
@@ -23,22 +23,27 @@ const footholdDrop = ["", "sm:mt-20", "sm:mt-40"];
 const contactHref = "mailto:ydm2790@gmail.com?subject=Ttush%20Push";
 
 /**
- * The page's one action, and therefore its one button shape.
+ * The page's one button shape, shared by its two actions: asking to join and
+ * opening the App Store.
  *
  * Radius is 0 here and everywhere else on the page: the game's world is cut
  * stone and the board is square, so a rounded control would be the only soft
  * edge on the site. Off-white on the page's own near-black rather than a third
  * accent, since azure and ember are already spoken for by the two teams.
  */
-function JoinCta({ label }: { label: string }) {
+function Cta({ href, label }: { href: string; label: string }) {
   return (
     <a
-      href={contactHref}
+      href={href}
       className="inline-block bg-ink px-7 py-3.5 font-semibold text-void transition-transform active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
     >
       {label}
     </a>
   );
+}
+
+function JoinCta({ label }: { label: string }) {
+  return <Cta href={contactHref} label={label} />;
 }
 
 export async function generateMetadata({
@@ -78,6 +83,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     numberOfPlayers: { "@type": "QuantitativeValue", minValue: 1, maxValue: 2 },
     applicationCategory: "Game",
     author: { "@type": "Person", name: "Dongmin Yu", email: "ydm2790@gmail.com" },
+    ...(appStoreUrl ? { installUrl: appStoreUrl } : {}),
   };
 
   return (
@@ -276,7 +282,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           <p className="mt-6 max-w-[48ch] text-pretty text-lg leading-relaxed text-ink-dim">
             {dict.closing.status}
           </p>
-          <div className="mt-10">
+          <div className="mt-10 flex flex-wrap gap-4">
+            {appStoreUrl ? <Cta href={appStoreUrl} label={dict.closing.appStore} /> : null}
             <JoinCta label={dict.closing.cta} />
           </div>
         </div>
