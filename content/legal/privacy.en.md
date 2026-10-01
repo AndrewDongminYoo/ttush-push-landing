@@ -18,9 +18,9 @@ Each time the app starts, whether or not it has ever failed, the reporting softw
 
 Like any internet connection, these requests also show Google's servers the IP address they come from. Nothing the app sends contains it, and Google counts it among the technical details it processes to run its Firebase services.
 
-When the app crashes, or recovers from an internal failure, the reporting software also makes a report so the problem can be fixed. A report is written to the device first and sent when the software next can: for a crash that stops the app, that is the next time the app starts, so a crash in an app that is never opened again is never sent. A report adds:
+When the app crashes, recovers from an internal failure, or on Android 11 and later is closed by the system because it stopped responding, the reporting software also makes a report so the problem can be fixed. A report is written to the device first and sent when the software next can: for a crash that stops the app, and for an app that stopped responding, that is the next time the app starts, so such a report is never sent if the app is not opened again. A report adds:
 
-- the stack trace, the state of the app and details of the device and operating system at the moment of the failure;
+- the stack trace, the state of the app and its threads, and details of the device and operating system at the moment of the failure;
 - for a failure the app recovered from, the error's text and a fixed label naming where in the app it happened.
 
 Nothing sent ever holds the board, the moves, the opponent, your name, or anything you entered, because the app has nothing to enter.
