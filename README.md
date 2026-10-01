@@ -15,7 +15,7 @@ pnpm lint
 
 ## What is real and what is a placeholder
 
-The privacy policy is accurate and load-bearing: Google Play requires the URL, and its central claim was verified against the shipped artifact rather than assumed. From Ttush Push 1.3.0 the released Android bundle declares `android.permission.INTERNET` and `ACCESS_NETWORK_STATE` for Firebase Crashlytics and nothing else that opens a connection, and the policy names that permission list; `docs/notes/store-privacy-declarations.md` in the app repository owns it.
+The privacy policy is accurate and load-bearing: Google Play requires the URL, and its central claim was verified rather than assumed. From Ttush Push 1.3.0 the released Android bundle declares `android.permission.INTERNET` and `ACCESS_NETWORK_STATE` for Firebase Crashlytics, and the policy names that permission list; `docs/notes/store-privacy-declarations.md` in the app repository owns it. That crash reporting is the only thing that opens a connection is read from the app's source and dependencies, as `CLAUDE.md` describes, because a declared permission does not say who uses it.
 
 Deliberately absent, each for a reason rather than as an oversight:
 

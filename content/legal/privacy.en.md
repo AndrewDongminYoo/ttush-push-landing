@@ -31,7 +31,7 @@ The "Send crash reports" switch on the New Match screen is on by default. Turnin
 
 ## The app reaches the network only for crash reporting
 
-Starting with version 1.3.0 the released Android app declares `android.permission.INTERNET` and `android.permission.ACCESS_NETWORK_STATE`, which Crashlytics needs to reach Google and to wait for a connection; before 1.3.0 it declared neither, and the operating system did not let it open a connection at all. iOS has no equivalent permission, so there the same claim rests on what the app is made of: the [source is public](https://github.com/AndrewDongminYoo/ttush_push), and the crash reporting SDK is the only dependency that opens a connection. There is no advertising SDK, no analytics product, and no server of the developer's own.
+Starting with version 1.3.0 the released Android app declares `android.permission.INTERNET` and `android.permission.ACCESS_NETWORK_STATE`, which Crashlytics needs to reach Google and to wait for a connection; before 1.3.0 it declared neither, and the operating system did not let it open a connection at all. A permission says that the app may use the network, not what uses it, and iOS has no equivalent permission, so on both platforms the claim rests on what the app is made of: the [source is public](https://github.com/AndrewDongminYoo/ttush_push), and the crash reporting SDK is the only part of the released app that opens a connection. There is no advertising SDK, no analytics product, and no server of the developer's own.
 
 ## What is stored on your device
 

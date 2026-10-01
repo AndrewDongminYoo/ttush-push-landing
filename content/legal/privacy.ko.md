@@ -31,7 +31,7 @@ Ttush Push는 이용자에 관해 아무것도 묻지 않으며, 이름이나 �
 
 ## 앱은 오류 보고를 위해서만 네트워크를 사용합니다
 
-1.3.0 버전부터 배포되는 Android 앱은 `android.permission.INTERNET`과 `android.permission.ACCESS_NETWORK_STATE`를 선언합니다. Crashlytics가 Google에 접속하고 연결을 기다리는 데 필요한 권한입니다. 1.3.0 이전 버전은 둘 다 선언하지 않았고, 운영체제가 연결 자체를 허용하지 않았습니다. iOS에는 대응하는 권한이 없으므로, iPhone에서는 같은 주장이 앱이 무엇으로 만들어졌는지에 근거합니다. [소스가 공개되어 있고](https://github.com/AndrewDongminYoo/ttush_push), 연결을 여는 의존성은 오류 보고 SDK 하나뿐입니다. 광고 SDK도, 분석 제품도, 개발자의 서버도 없습니다.
+1.3.0 버전부터 배포되는 Android 앱은 `android.permission.INTERNET`과 `android.permission.ACCESS_NETWORK_STATE`를 선언합니다. Crashlytics가 Google에 접속하고 연결을 기다리는 데 필요한 권한입니다. 1.3.0 이전 버전은 둘 다 선언하지 않았고, 운영체제가 연결 자체를 허용하지 않았습니다. 권한은 앱이 네트워크를 쓸 수 있다는 사실만 알려 줄 뿐 무엇이 쓰는지는 알려 주지 않고, iOS에는 대응하는 권한이 없습니다. 따라서 두 플랫폼 모두에서 이 주장은 앱이 무엇으로 만들어졌는지에 근거합니다. [소스가 공개되어 있고](https://github.com/AndrewDongminYoo/ttush_push), 배포되는 앱에서 연결을 여는 부분은 오류 보고 SDK 하나뿐입니다. 광고 SDK도, 분석 제품도, 개발자의 서버도 없습니다.
 
 ## 기기에 저장되는 것
 
