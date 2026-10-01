@@ -14,7 +14,7 @@ When the app crashes, or recovers from an internal failure, it sends a report so
 
 A report never holds the board, the moves, the opponent, your name, or anything you entered, because the app has nothing to enter.
 
-The reports go to Google's Firebase Crashlytics service, encrypted in transit, and Google processes them on the developer's behalf under the [Firebase privacy terms](https://firebase.google.com/support/privacy). Crashlytics keeps a report and its identifiers for 90 days and then removes them. No analytics service runs in the app, and the reports are not used for advertising.
+The reports go to Google's Firebase Crashlytics service, encrypted in transit, and Google processes them on the developer's behalf under the [Firebase privacy terms](https://firebase.google.com/support/privacy). Crashlytics keeps a report, and the identifiers stored with it, for 90 days and then removes them. The Firebase installation ID that identifies the installation is kept by Google for as long as the app stays installed: the app does not ask for its deletion, reinstalling the app creates a new one, and Google removes a deleted one within 180 days. No analytics service runs in the app, and the reports are not used for advertising.
 
 The "Send crash reports" switch on the New Match screen is on by default. Turning it off stops the collection at once, discards any report the device still holds, and stays off until you turn it back on. A report that was already sent cannot be withdrawn from Google by the app.
 
