@@ -16,7 +16,7 @@ A report never holds the board, the moves, the opponent, your name, or anything 
 
 The reports go to Google's Firebase Crashlytics service, encrypted in transit, and Google processes them on the developer's behalf under the [Firebase privacy terms](https://firebase.google.com/support/privacy). Crashlytics keeps a report, and the identifiers stored with it, for 90 days and then removes them. The Firebase installation ID that identifies the installation is kept by Google for as long as the app stays installed: the app does not ask for its deletion, reinstalling the app creates a new one, and Google removes a deleted one within 180 days. No analytics service runs in the app, and the reports are not used for advertising.
 
-The "Send crash reports" switch on the New Match screen is on by default. Turning it off stops the collection at once, discards any report the device still holds, and stays off until you turn it back on. A report that was already sent cannot be withdrawn from Google by the app.
+The "Send crash reports" switch on the New Match screen is on by default. Turning it off stops reports from being sent, discards the reports the device holds, and stays off until you turn it back on; a crash after that can still be written to the device by the reporting software, and the app discards it the next time it starts instead of sending it. A report that was already sent cannot be withdrawn from Google by the app.
 
 ## The app reaches the network only for crash reports
 
@@ -31,7 +31,7 @@ Only these yes-or-no values, and none of them leaves the device:
 - whether play reminders are on, whether the app has already asked for permission to show them, and whether you have finished a match, which is when it first asks;
 - whether crash reports are on, which the Crashlytics SDK stores for itself.
 
-Crashlytics also keeps files of its own on the device: the two installation identifiers, and a report it has not sent yet, for example after a crash while offline. Turning crash reports off discards the unsent reports.
+Crashlytics also keeps files of its own on the device: the two installation identifiers, and a report it has not sent yet, for example after a crash while offline. Turning crash reports off discards the unsent reports, at once and again at the next start.
 
 Match results and scores are held in memory for the length of a session and are gone when the app closes. Removing the app removes the stored values and the Crashlytics files with it.
 
