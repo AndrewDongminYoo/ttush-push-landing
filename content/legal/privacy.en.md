@@ -13,7 +13,8 @@ Each time the app starts, whether or not it has ever failed, the reporting softw
 - two identifiers that Crashlytics generates for the installation, used to count sessions and how many installations a crash affects. They single out the installation, not you: they are not tied to a name, an account, or the device's advertising identifier, and they change when the app is reinstalled;
 - a random identifier for the session and the time it started;
 - the app's version, the make and model of the device and the version of its operating system;
-- the language and region the device is set to and its time zone, and on Android the kind of network connection and the mobile operator's code.
+- the language and region the device is set to and its time zone, and on Android the kind of network connection and the mobile operator's code;
+- counts the reporting software keeps about itself, such as how many records it is holding or has dropped.
 
 When the app crashes, or recovers from an internal failure, it also sends a report so the problem can be fixed. A report adds:
 
@@ -22,7 +23,7 @@ When the app crashes, or recovers from an internal failure, it also sends a repo
 
 Nothing sent ever holds the board, the moves, the opponent, your name, or anything you entered, because the app has nothing to enter.
 
-All of it goes to Google's Firebase services, encrypted in transit, and Google processes it on the developer's behalf under the [Firebase privacy terms](https://firebase.google.com/support/privacy). Crashlytics keeps a report, and the identifiers stored with it, for 90 days and then removes them; Google states no separate period for the session records. The Firebase installation ID that identifies the installation is kept by Google for as long as the app stays installed: the app does not ask for its deletion, reinstalling the app creates a new one, and Google removes a deleted one within 180 days. The app carries no analytics product such as Google Analytics; the session record is the only usage figure Google receives, and none of the data is used for advertising.
+All of it goes to Google's Firebase services, encrypted in transit, and Google processes it on the developer's behalf under the [Firebase privacy terms](https://firebase.google.com/support/privacy). Crashlytics keeps a report, and the identifiers stored with it, for 90 days and then removes them; Google states no separate period for the session records. The Firebase installation ID that identifies the installation is kept by Google until the app has gone unused for 270 days, which is Google's current threshold, and that holds after the app is removed, because nothing tells Google that it was. The app does not ask for an earlier deletion, and reinstalling the app creates a new ID. The app carries no analytics product such as Google Analytics; the session record is the only usage figure Google receives, and none of the data is used for advertising.
 
 The "Send crash reports" switch on the New Match screen is on by default. Turning it off stops all of the above, discards the reports the device holds, and stays off until you turn it back on: the app no longer contacts Google when it starts, and a crash after that can still be written to the device by the reporting software, but the app discards it the next time it starts instead of sending it. Two limits apply. A new installation starts with the switch on, so its first start is registered and recorded before you can reach the switch. And a record or a report that the reporting software had already queued for sending when you turned the switch off may still be sent. Nothing that was already sent can be withdrawn from Google by the app.
 
