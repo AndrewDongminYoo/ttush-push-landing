@@ -31,7 +31,9 @@ Only these yes-or-no values, and none of them leaves the device:
 - whether play reminders are on, whether the app has already asked for permission to show them, and whether you have finished a match, which is when it first asks;
 - whether crash reports are on, which the Crashlytics SDK stores for itself.
 
-Match results and scores are held in memory for the length of a session and are gone when the app closes. Removing the app removes the stored values with it.
+Crashlytics also keeps files of its own on the device: the two installation identifiers, and a report it has not sent yet, for example after a crash while offline. Turning crash reports off discards the unsent reports.
+
+Match results and scores are held in memory for the length of a session and are gone when the app closes. Removing the app removes the stored values and the Crashlytics files with it.
 
 ## Play reminders
 
