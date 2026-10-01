@@ -1,16 +1,26 @@
 # Privacy Policy
 
-_Last updated: 30 September 2026_
+_Last updated: 1 October 2026_
 
-Ttush Push does not collect, transmit, or store any personal information.
+Ttush Push collects no personal information. Starting with version 1.3.0, the app sends crash reports to Firebase Crashlytics unless you turn that off, and nothing else leaves the device. Versions before 1.3.0 make no network request at all.
 
-## The app cannot reach the network
+## Crash reports
 
-This is not a promise about restraint; it is a property of the build. The released Android app declares no `android.permission.INTERNET`, so the operating system does not permit it to open a network connection at all. The permission appears only in the debug and profile builds, which the Flutter tooling uses for hot reload during development and which are never published.
+When the app crashes, or recovers from an internal failure, it sends a report so the problem can be fixed. A report holds:
 
-iOS has no equivalent permission to withhold, so on iPhone the same claim rests on what the app is made of rather than on what the system refuses. The app bundles no networking library, and no part of it opens a connection. That is checkable rather than a promise: the [source is public](https://github.com/AndrewDongminYoo/ttush_push), and the dependency list, the rules engine's own manifest, and the absence of any HTTP or socket call in the app code all carry it.
+- the stack trace, the state of the app and details of the device and operating system at the moment of the failure;
+- for a failure the app recovered from, the error's text and a fixed label naming where in the app it happened;
+- two identifiers that Crashlytics generates for the installation, used to count how many installations a crash affects. They are not tied to you, to an account, or to the device's advertising identifier.
 
-There is therefore no analytics, no crash reporting, no advertising, and no third-party SDK receiving anything about you, on either platform.
+A report never holds the board, the moves, the opponent, your name, or anything you entered, because the app has nothing to enter.
+
+The reports go to Google's Firebase Crashlytics service, encrypted in transit, and Google processes them on the developer's behalf under the [Firebase privacy terms](https://firebase.google.com/support/privacy). Crashlytics keeps a report and its identifiers for 90 days and then removes them. No analytics service runs in the app, and the reports are not used for advertising.
+
+The "Send crash reports" switch on the New Match screen is on by default. Turning it off stops the collection at once, discards any report the device still holds, and stays off until you turn it back on. A report that was already sent cannot be withdrawn from Google by the app.
+
+## The app reaches the network only for crash reports
+
+Starting with version 1.3.0 the released Android app declares `android.permission.INTERNET` and `android.permission.ACCESS_NETWORK_STATE`, which Crashlytics needs to send a report and to wait for a connection; before 1.3.0 it declared neither, and the operating system did not let it open a connection at all. iOS has no equivalent permission, so there the same claim rests on what the app is made of: the [source is public](https://github.com/AndrewDongminYoo/ttush_push), and the crash reporting SDK is the only dependency that opens a connection. There is no advertising SDK, no analytics SDK, and no server of the developer's own.
 
 ## What is stored on your device
 
@@ -18,7 +28,8 @@ Only these yes-or-no values, and none of them leaves the device:
 
 - whether you have finished the first-play coach, so it does not reappear every time you open the game;
 - whether sound is on, and whether haptics are on;
-- whether play reminders are on, whether the app has already asked for permission to show them, and whether you have finished a match, which is when it first asks.
+- whether play reminders are on, whether the app has already asked for permission to show them, and whether you have finished a match, which is when it first asks;
+- whether crash reports are on, which the Crashlytics SDK stores for itself.
 
 Match results and scores are held in memory for the length of a session and are gone when the app closes. Removing the app removes the stored values with it.
 
@@ -28,17 +39,17 @@ The app can remind you to play a day after you last opened it or finished a matc
 
 ## Children
 
-The game has no accounts, no chat, no purchases and no advertising, and it collects nothing, so there is nothing to treat differently for younger players.
+The game has no accounts, no chat, no purchases and no advertising. The only thing it sends, a crash report, carries nothing about who is playing, so there is nothing to treat differently for younger players.
 
 ## Permissions
 
 The one permission the app asks for is to show notifications, for the play reminder. It asks after your first finished match while reminders are on, or when you turn reminders on yourself, and the game plays the same if you refuse. On Android the system shows that question from Android 13; earlier versions allow notifications without asking.
 
-On Android the app also declares permissions that need no grant: one to keep a pending reminder across a restart of the device, and vibration. Haptics use the standard platform haptics API on both platforms.
+On Android the app also declares permissions that need no grant: network access and network state for the crash reports, one to keep a pending reminder across a restart of the device, and vibration. Haptics use the standard platform haptics API on both platforms.
 
 ## Changes
 
-If a future version collects anything, this page will say so before that version ships, and the date above will change.
+If a future version collects anything more, this page will say so before that version ships, and the date above will change.
 
 ## Contact
 
