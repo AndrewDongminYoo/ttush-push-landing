@@ -15,7 +15,7 @@ pnpm lint
 
 ## What is real and what is a placeholder
 
-The privacy policy is accurate and load-bearing: Google Play requires the URL, and its central claim was verified against the shipped artifact rather than assumed. The released Android bundle declares no `android.permission.INTERNET`, so the app cannot open a network connection; the permission appears only in the debug and profile manifests that Flutter uses for hot reload.
+The privacy policy is accurate and load-bearing: Google Play requires the URL, and its central claim was verified rather than assumed. From Ttush Push 1.3.0 the released Android bundle declares `android.permission.INTERNET` and `ACCESS_NETWORK_STATE` for Firebase Crashlytics, and the policy names that permission list; `docs/notes/store-privacy-declarations.md` in the app repository owns it. That crash reporting is the only thing that opens a connection is read from the app's source and dependencies, as `CLAUDE.md` describes, because a declared permission does not say who uses it.
 
 Deliberately absent, each for a reason rather than as an oversight:
 
@@ -37,4 +37,4 @@ The app repository's release checklist has a step that points here. When a relea
 Two things here are copies of something the app owns, and copies drift:
 
 - `public/board/` and `public/sky/` are the app's sprites and background. Re-copy them when the art changes.
-- The hero's move sequence encodes how `engine/src/lib.rs` resolves a push and decays a foothold. A change to move resolution makes it a stale claim, the same way a new `android.permission.INTERNET` would make the privacy policy one.
+- The hero's move sequence encodes how `engine/src/lib.rs` resolves a push and decays a foothold. A change to move resolution makes it a stale claim, the same way a permission the policy does not name would make the privacy policy one.
