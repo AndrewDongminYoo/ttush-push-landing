@@ -8,7 +8,8 @@ allowBuilds:
 overrides:
   postcss: ">=8.5.22"
   sharp: ">=0.35.0"
-# brace-expansion needs no override: GHSA-rgw5-rvv9-x895 (>=4.0.0, <5.0.9) only
-# matched the 5.x copy under minimatch@10, and an in-range update took it to
-# 5.0.9. The 1.1.18 copy under eslint's minimatch@3 is outside that range and
-# stays.
+# brace-expansion needs no override: its fixes sit inside the ranges minimatch
+# asks for, so an in-range update (`pnpm update brace-expansion --depth 99`)
+# reaches them. GHSA-rgw5-rvv9-x895 took the 5.x copy under minimatch@10 to
+# 5.0.9, and GHSA-6j4f-fj2g-mc7p, GHSA-qhr7-859c-m2p7 and GHSA-q2hr-2g5m-vwhr
+# took it to 5.0.12 and the 1.x copy under eslint's minimatch@3 to 1.1.21.
