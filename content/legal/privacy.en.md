@@ -6,11 +6,11 @@ Ttush Push asks for nothing about you and collects no name, account, contact det
 
 ## Crash reporting
 
-This section describes what the reporting software sends, as read from its source code and from Google's own disclosure for the versions the app uses. The software is Google's and Google can change it; if that changes what is sent, this page changes with it.
+This section describes what the reporting software sends, as read from its source code and from Google's own disclosure for the versions the app uses. The lists name the kinds of data involved, not every field of every request; Google's own account is in the Firebase privacy terms linked below. The software is Google's and Google can change it; if that changes what is sent, this page changes with it.
 
-Each time the app starts, whether or not it has ever failed, the reporting software registers the installation with Google, fetches its own settings, and records that a session started, so that Crashlytics can say what share of sessions ran without a crash. These requests hold:
+Each time the app starts, whether or not it has ever failed, the reporting software registers the installation with Google, fetches its own settings, and records that a session started, so that Crashlytics can say what share of sessions ran without a crash. These requests hold data of these kinds:
 
-- two identifiers that Crashlytics generates for the installation, used to count sessions and how many installations a crash affects. They single out the installation, not you: they are not tied to a name, an account, or the device's advertising identifier, and they change when the app is reinstalled;
+- two identifiers that Crashlytics generates for the installation, used to count sessions and how many installations a crash affects, and a token that Google issues to the installation so that its requests can be authenticated. They single out the installation, not you: they are not tied to a name, an account, or the device's advertising identifier, and they change when the app is reinstalled;
 - a random identifier for the session and the time it started;
 - the app's version, the make and model of the device and the version of its operating system;
 - the language and region the device is set to and its time zone, and on Android the kind of network connection and the mobile operator's code;
@@ -41,7 +41,7 @@ Only these yes-or-no values, and none of them leaves the device:
 - whether sound is on, and whether haptics are on;
 - whether play reminders are on, whether the app has already asked for permission to show them, and whether you have finished a match, which is when it first asks.
 
-Crashlytics also keeps files of its own on the device: whether crash reports are on, the two installation identifiers, a copy of its settings, the current session's identifier, and whatever it has not sent yet, for example a report after a crash while offline. Turning crash reports off discards the unsent reports, at once and again at the next start.
+Crashlytics also keeps data of its own on the device, of these kinds: whether crash reports are on, the two installation identifiers and the installation's token, a copy of its settings, the current session's identifier, and whatever it has not sent yet, for example a report after a crash while offline. Turning crash reports off discards the unsent reports, at once and again at the next start.
 
 Match results and scores are held in memory for the length of a session and are gone when the app closes. Removing the app removes the stored values and the Crashlytics files with it. On an iPhone the system keychain can keep the old Firebase installation ID after the app is removed; a reinstalled app does not read it and creates a new one.
 
