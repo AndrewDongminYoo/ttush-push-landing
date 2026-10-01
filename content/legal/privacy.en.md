@@ -2,11 +2,11 @@
 
 _Last updated: 1 October 2026_
 
-Ttush Push asks for nothing about you and collects no name, account, contact detail or gameplay data. Starting with version 1.3.0, the app carries Google's Firebase Crashlytics crash reporting, which is on unless you turn it off. While it is on, the app contacts Crashlytics each time it starts and sends a report when it fails; both carry diagnostic data and an identifier for the installation, as described below, and nothing else leaves the device. Versions before 1.3.0 make no network request at all.
+Ttush Push asks for nothing about you and collects no name, account, contact detail or gameplay data. Starting with version 1.3.0, the app carries Google's Firebase Crashlytics crash reporting, which is on unless you turn it off. While it is on, the app contacts Crashlytics each time it starts and reports its failures to it; what that carries is diagnostic data and an identifier for the installation, as described below. Nothing else in the app sends anything. Versions before 1.3.0 make no network request at all.
 
 ## Crash reporting
 
-Crash reporting sends data at two moments.
+This section describes what the reporting software sends, as read from its source code and from Google's own disclosure for the versions the app uses. The software is Google's and Google can change it; if that changes what is sent, this page changes with it.
 
 Each time the app starts, whether or not it has ever failed, the reporting software registers the installation with Google, fetches its own settings, and records that a session started, so that Crashlytics can say what share of sessions ran without a crash. These requests hold:
 
@@ -16,7 +16,9 @@ Each time the app starts, whether or not it has ever failed, the reporting softw
 - the language and region the device is set to and its time zone, and on Android the kind of network connection and the mobile operator's code;
 - counts the reporting software keeps about itself, such as how many records it is holding or has dropped.
 
-When the app crashes, or recovers from an internal failure, it also sends a report so the problem can be fixed. A report adds:
+Like any internet connection, these requests also show Google's servers the IP address they come from. Nothing the app sends contains it, and Google counts it among the technical details it processes to run its Firebase services.
+
+When the app crashes, or recovers from an internal failure, the reporting software also makes a report so the problem can be fixed. A report is written to the device first and sent when the software next can: for a crash that stops the app, that is the next time the app starts, so a crash in an app that is never opened again is never sent. A report adds:
 
 - the stack trace, the state of the app and details of the device and operating system at the moment of the failure;
 - for a failure the app recovered from, the error's text and a fixed label naming where in the app it happened.
