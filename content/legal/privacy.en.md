@@ -2,7 +2,7 @@
 
 _Last updated: 1 October 2026_
 
-Ttush Push collects no personal information. Starting with version 1.3.0, the app sends crash reports to Firebase Crashlytics unless you turn that off, and nothing else leaves the device. Versions before 1.3.0 make no network request at all.
+Ttush Push asks for nothing about you and collects no name, account, contact detail or gameplay data. Starting with version 1.3.0, the app sends crash reports to Firebase Crashlytics unless you turn that off; a report carries diagnostic data and an identifier for the installation, as described below, and nothing else leaves the device. Versions before 1.3.0 make no network request at all.
 
 ## Crash reports
 
@@ -10,7 +10,7 @@ When the app crashes, or recovers from an internal failure, it sends a report so
 
 - the stack trace, the state of the app and details of the device and operating system at the moment of the failure;
 - for a failure the app recovered from, the error's text and a fixed label naming where in the app it happened;
-- two identifiers that Crashlytics generates for the installation, used to count how many installations a crash affects. They are not tied to you, to an account, or to the device's advertising identifier.
+- two identifiers that Crashlytics generates for the installation, used to count how many installations a crash affects. They single out the installation, not you: they are not tied to a name, an account, or the device's advertising identifier, and they change when the app is reinstalled.
 
 A report never holds the board, the moves, the opponent, your name, or anything you entered, because the app has nothing to enter.
 
