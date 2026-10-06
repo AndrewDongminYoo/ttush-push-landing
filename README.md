@@ -15,9 +15,9 @@ pnpm lint
 
 ## What is real and what is a placeholder
 
-The privacy policy is accurate and load-bearing: Google Play requires the URL, and its central claim was verified rather than assumed. From Ttush Push 1.3.0 the released Android bundle declares `android.permission.INTERNET` and `ACCESS_NETWORK_STATE` for Firebase Crashlytics, and the policy names that permission list; `docs/notes/store-privacy-declarations.md` in the app repository owns it. That crash reporting is the only thing that opens a connection is read from the app's source and dependencies, as `CLAUDE.md` describes, because a declared permission does not say who uses it.
+The privacy policy is accurate and load-bearing: Google Play requires the URL, and its central claim was verified rather than assumed. From Ttush Push 1.3.0 the released Android bundle declares `android.permission.INTERNET` and `ACCESS_NETWORK_STATE` for Firebase Crashlytics, and from 1.4.0 Google Analytics for Firebase and the Google Mobile Ads SDK add the advertising ID and ad services permissions; the policy names those permissions, and `docs/notes/store-privacy-declarations.md` in the app repository owns the list. That those three SDKs are the only things that open a connection is read from the app's source and dependencies, as `CLAUDE.md` describes, because a declared permission does not say who uses it.
 
-`public/app-ads.txt` names the AdMob publisher ahead of the native ads in the app repository's `docs/specs/0018-native-admob-ads/spec.md`, which lists it among the prerequisites of the first live ad build. AdMob reads it from the developer website each store lists, one subdomain level deep, so it belongs on this host rather than on `donminzzi.kr`. Publishing it does not make the app serve ads, so it leaves the privacy policy's claims standing; that policy changes in the release that carries the ad SDK.
+`public/app-ads.txt` names the AdMob publisher of the native ads in the app repository's `docs/specs/0018-native-admob-ads/spec.md`. AdMob reads it from the developer website each store lists, one subdomain level deep, so it belongs on this host rather than on `donminzzi.kr`.
 
 Deliberately absent, each for a reason rather than as an oversight:
 
