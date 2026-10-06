@@ -17,6 +17,8 @@ pnpm lint
 
 The privacy policy is accurate and load-bearing: Google Play requires the URL, and its central claim was verified rather than assumed. From Ttush Push 1.3.0 the released Android bundle declares `android.permission.INTERNET` and `ACCESS_NETWORK_STATE` for Firebase Crashlytics, and the policy names that permission list; `docs/notes/store-privacy-declarations.md` in the app repository owns it. That crash reporting is the only thing that opens a connection is read from the app's source and dependencies, as `CLAUDE.md` describes, because a declared permission does not say who uses it.
 
+`public/app-ads.txt` names the AdMob publisher ahead of the native ads in the app repository's `docs/specs/0018-native-admob-ads/spec.md`, which lists it among the prerequisites of the first live ad build. AdMob reads it from the developer website each store lists, one subdomain level deep, so it belongs on this host rather than on `donminzzi.kr`. Publishing it does not make the app serve ads, so it leaves the privacy policy's claims standing; that policy changes in the release that carries the ad SDK.
+
 Deliberately absent, each for a reason rather than as an oversight:
 
 | Missing                   | Why                                                                                                                                                                                                                                                                            |
@@ -26,7 +28,6 @@ Deliberately absent, each for a reason rather than as an oversight:
 | Screenshots               | None taken from a release build on a real device yet. The hero board stands in: it is the app's own art, so it is honest about how the game looks, but it is not a capture of the running app.                                                                                 |
 | `llms.txt`                | It would have to restate the rules that `lib/dictionaries.ts` already owns, and a second copy drifts. Add one when there is a fact it can carry that the page does not.                                                                                                        |
 | Terms of service          | Not written. Play requires a privacy policy, not terms, and inventing legal text is worse than having none.                                                                                                                                                                    |
-| `app-ads.txt`             | Only meaningful for an app that serves ads. This one does not.                                                                                                                                                                                                                 |
 
 Add store links and the `/download` redirect together, in `lib/site.ts` and `next.config.ts`; the sibling repositories show the shape.
 
