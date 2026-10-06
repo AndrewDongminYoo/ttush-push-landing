@@ -64,7 +64,7 @@ Before the app requests any ad, it runs Google's User Messaging Platform:
 - On iPhone and iPad, Google's message explains why the app asks to track, and Apple's prompt follows. If you allow tracking, the SDK can read your device's advertising identifier; if you ask the app not to track, it cannot. You can change this later in Settings, under Privacy & Security, Tracking.
 - On Android, you can reset or delete the advertising ID in the device's settings, usually under Privacy, Ads.
 
-Ads are shown whatever you answer; your answers decide what Google may use to choose them. Neither switch on the New Match screen stops the ads or what the ad SDK sends to Google. If the consent step fails, the app requests no ads at all.
+Ads are shown whatever you answer; your answers decide what Google may use to choose them. Neither switch on the New Match screen stops the ads or what the ad SDK sends to Google. If the consent step fails, the app relies on the answers you gave at an earlier start, which Google's consent tool keeps on the device; if there are none, it requests no ads until the next start.
 
 ## What opens a connection
 
