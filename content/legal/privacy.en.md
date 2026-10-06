@@ -24,7 +24,7 @@ When the app crashes, recovers from an internal failure, or on Android 11 and la
 - for a failure the app recovered from, the error's text and a fixed label naming where in the app it happened;
 - from version 1.4.0, the most recent usage events described in the next section, if usage data is on.
 
-Nothing sent ever holds the board, the moves, the opponent, your name, or anything you entered, because the app has nothing to enter.
+Nothing sent ever holds a position on the board, the moves that were played, your name, or anything you entered, because the app has nothing to enter. From version 1.4.0 the usage events, and so the reports that carry them, do say which built-in board a match used, whether it was against the computer, who won, and how many rounds and moves it took, as the next section describes.
 
 All of it goes to Google's Firebase services, encrypted in transit, and Google processes it on the developer's behalf under the [Firebase privacy terms](https://firebase.google.com/support/privacy). Crashlytics keeps a report, and the identifiers stored with it, for 90 days and then removes them; Google states no separate period for the session records. The Firebase installation ID that identifies the installation is kept by Google until the app has gone unused for 270 days, which is Google's current threshold, and that holds after the app is removed, because nothing tells Google that it was. The app does not ask for an earlier deletion, and reinstalling the app creates a new ID. None of the crash reporting data is used for advertising.
 
