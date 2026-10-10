@@ -111,7 +111,7 @@ const dictionaries: Record<Locale, Dictionary> = {
     },
     explorers: {
       title: "아주르와 엠버",
-      sub: "둘은 색만 다른 것이 아닙니다. 아주르의 두건은 둥글고 엠버의 두건은 각져 있어서, 색이 잘 구분되지 않는 화면에서도 실루엣으로 갈라집니다. 스프라이트는 방금 움직인 방향을 바라봅니다.",
+      sub: "둘은 색만 다른 것이 아닙니다. 아주르의 두건은 둥글고 엠버의 두건은 각져 있어서, 색이 잘 구분되지 않는 화면에서도 실루엣으로 갈라집니다. 스프라이트는 방금 움직인 방향을 바라보고, 발판 사이를 뛰어서 옮겨 가며, 상대를 두 손으로 밀어냅니다. 밀려난 탐험가는 발판에 내려앉거나, 무너진 자리나 판 밖으로 떨어집니다.",
       teams: [
         { name: "아주르", desc: "둥근 두건과 짧은 망토, 깊은 남색." },
         { name: "엠버", desc: "각진 두건과 각진 외투, 짙은 진홍색." },
@@ -120,7 +120,7 @@ const dictionaries: Record<Locale, Dictionary> = {
     closing: {
       title: "App Store에서 받을 수 있습니다",
       status:
-        "iPhone과 iPad에서는 App Store에서 받을 수 있습니다. Google Play는 프로덕션 전환을 앞둔 비공개 테스트 중이라 아직 공개된 스토어 페이지가 없습니다. Android에서 먼저 해 보고 싶으시면 메일로 알려 주세요.",
+        "iPhone과 iPad에서는 App Store에서 받을 수 있습니다. Google Play는 비공개 테스트를 마치고 프로덕션 출시 심사를 받고 있어서 아직 공개된 스토어 페이지가 없습니다. Android에서 먼저 해 보고 싶으시면 메일로 알려 주세요.",
       appStore: "App Store에서 보기",
       cta: "테스트 참여 문의",
     },
@@ -183,7 +183,7 @@ const dictionaries: Record<Locale, Dictionary> = {
     },
     explorers: {
       title: "Azure and Ember",
-      sub: "The two differ by more than colour. Azure's hood is round and Ember's is angular, so they stay apart on a screen where the colours are hard to tell. Each sprite faces the direction it just moved.",
+      sub: "The two differ by more than colour. Azure's hood is round and Ember's is angular, so they stay apart on a screen where the colours are hard to tell. Each sprite faces the direction it just moved, jumps from foothold to foothold, and pushes with both hands. A pushed explorer lands, or falls into a collapsed square or off the edge of the board.",
       teams: [
         { name: "Azure", desc: "Rounded hood, short cape, deep indigo." },
         { name: "Ember", desc: "Angular hood, squared coat, dark crimson." },
@@ -192,7 +192,7 @@ const dictionaries: Record<Locale, Dictionary> = {
     closing: {
       title: "On the App Store",
       status:
-        "On iPhone and iPad, get it from the App Store. Google Play is in closed testing on the way to a production listing and has no public store page yet, so write if you want to play it early on Android.",
+        "On iPhone and iPad, get it from the App Store. Google Play has finished closed testing and is in review for a production listing, with no public store page yet, so write if you want to play it early on Android.",
       appStore: "View on the App Store",
       cta: "Ask to join",
     },
