@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [{ source: "/", destination: "/ko", permanent: false }];
   },
+  agentRules: false,
 };
 
 export default nextConfig;
