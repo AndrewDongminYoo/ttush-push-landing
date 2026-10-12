@@ -118,8 +118,10 @@ const dictionaries: Record<Locale, Dictionary> = {
       ],
     },
     closing: {
-      title: "App Store와 Google Play에서 받을 수 있습니다",
-      status: "iPhone과 iPad에서는 App Store에서, Android에서는 Google Play에서 받을 수 있습니다.",
+      // A no-break space keeps "Google Play" on one line: `keep-all` breaks
+      // Korean only at spaces, and the plain one fell inside the name at 1440px.
+      title: "App Store와 Google Play에서 받을 수 있습니다",
+      status: "iPhone과 iPad에서는 App Store에서, Android에서는 Google Play에서 받을 수 있습니다.",
       appStore: "App Store에서 보기",
       playStore: "Google Play에서 보기",
     },
