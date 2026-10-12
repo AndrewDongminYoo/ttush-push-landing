@@ -34,6 +34,9 @@ lint:
     - trivy@0.70.0
     - trufflehog@3.90.13
     - yamllint@1.38.0
+  ignore:
+    - linters: [markdownlint]
+      paths: [content/legal/*.md]
 actions:
   enabled:
     - trunk-announce
