@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { BoardReplay } from "@/components/board-replay";
 import { getDictionary } from "@/lib/dictionaries";
 import { isLocale } from "@/lib/i18n";
-import { appStoreUrl, ogImage, siteUrl } from "@/lib/site";
+import { appStoreUrl, ogImage, playStoreUrl, siteUrl } from "@/lib/site";
 
 const facings = ["up", "left", "right", "down"] as const;
 const teamIds = ["azure", "ember"] as const;
@@ -20,11 +20,14 @@ const footholdArt = [
 // Mobile drops the offsets and reads as a plain sequence.
 const footholdDrop = ["", "sm:mt-20", "sm:mt-40"];
 
-const contactHref = "mailto:ydm2790@gmail.com?subject=Ttush%20Push";
+// The hero's button scrolls to the store buttons rather than opening one store:
+// without a /download redirect (see next.config.ts) one link cannot send each
+// platform to its own store.
+const storesId = "stores";
 
 /**
- * The page's one button shape, shared by its two actions: asking to join and
- * opening the App Store.
+ * The page's one button shape, shared by its actions: going to the store
+ * buttons and opening each store.
  *
  * Radius is 0 here and everywhere else on the page: the game's world is cut
  * stone and the board is square, so a rounded control would be the only soft
@@ -40,10 +43,6 @@ function Cta({ href, label }: { href: string; label: string }) {
       {label}
     </a>
   );
-}
-
-function JoinCta({ label }: { label: string }) {
-  return <Cta href={contactHref} label={label} />;
 }
 
 export async function generateMetadata({
@@ -68,6 +67,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   }
   const dict = getDictionary(locale);
 
+  const installUrls = [appStoreUrl, playStoreUrl].filter((url): url is string => url !== null);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "VideoGame",
@@ -83,7 +83,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     numberOfPlayers: { "@type": "QuantitativeValue", minValue: 1, maxValue: 2 },
     applicationCategory: "Game",
     author: { "@type": "Person", name: "Dongmin Yu", email: "ydm2790@gmail.com" },
-    ...(appStoreUrl ? { installUrl: appStoreUrl } : {}),
+    // `installUrl` is a SoftwareApplication property, which VideoGame inherits;
+    // like any schema.org property it may carry more than one value.
+    ...(installUrls.length > 0 ? { installUrl: installUrls } : {}),
   };
 
   return (
@@ -130,7 +132,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               {dict.hero.sub}
             </p>
             <div className="mt-9">
-              <JoinCta label={dict.hero.cta} />
+              <Cta href={`#${storesId}`} label={dict.hero.cta} />
             </div>
           </div>
 
@@ -250,9 +252,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </section>
 
-      {/* The page ends where it opened, in the ruins. One statement, one
-          action, and the same label the hero used. */}
-      <section className="relative isolate overflow-hidden">
+      {/* The page ends where it opened, in the ruins. One statement, and the
+          store buttons the hero's call to action scrolls to. */}
+      <section id={storesId} className="relative isolate overflow-hidden">
         <Image
           src="/sky/air-ruins-twilight.png"
           alt=""
@@ -284,7 +286,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </p>
           <div className="mt-10 flex flex-wrap gap-4">
             {appStoreUrl ? <Cta href={appStoreUrl} label={dict.closing.appStore} /> : null}
-            <JoinCta label={dict.closing.cta} />
+            {playStoreUrl ? <Cta href={playStoreUrl} label={dict.closing.playStore} /> : null}
           </div>
         </div>
       </section>

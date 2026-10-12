@@ -51,7 +51,7 @@ export type Dictionary = {
     sub: string;
     teams: readonly { name: string; desc: string }[];
   };
-  closing: { title: string; status: string; appStore: string; cta: string };
+  closing: { title: string; status: string; appStore: string; playStore: string };
   footer: {
     developer: string;
     contact: string;
@@ -73,7 +73,7 @@ const dictionaries: Record<Locale, Dictionary> = {
     hero: {
       tagline: "밀어내거나, 무너진 자리에 빠지거나",
       sub: "발판 스물다섯 칸. 지나온 발판은 금이 가고, 다시 떠나면 무너집니다. 상대를 그 구멍으로 밀어 넣으세요.",
-      cta: "테스트 참여 문의",
+      cta: "스토어에서 받기",
       boardCaption: "한 라운드가 끝나는 세 수",
       boardAlt: "5×5 발판 위에서 아주르 탐험가가 엠버 탐험가를 무너진 발판으로 밀어내는 장면.",
       boardStill: "엠버가 방금 자기 발판을 무너뜨렸고, 아주르가 바로 옆 칸까지 다가와 있습니다.",
@@ -118,11 +118,12 @@ const dictionaries: Record<Locale, Dictionary> = {
       ],
     },
     closing: {
-      title: "App Store에서 받을 수 있습니다",
-      status:
-        "iPhone과 iPad에서는 App Store에서 받을 수 있습니다. Google Play는 비공개 테스트를 마치고 프로덕션 출시 심사를 받고 있어서 아직 공개된 스토어 페이지가 없습니다. Android에서 먼저 해 보고 싶으시면 메일로 알려 주세요.",
+      // A no-break space keeps "Google Play" on one line: `keep-all` breaks
+      // Korean only at spaces, and the plain one fell inside the name at 1440px.
+      title: "App Store와 Google Play에서 받을 수 있습니다",
+      status: "iPhone과 iPad에서는 App Store에서, Android에서는 Google Play에서 받을 수 있습니다.",
       appStore: "App Store에서 보기",
-      cta: "테스트 참여 문의",
+      playStore: "Google Play에서 보기",
     },
     footer: {
       developer: "만든 사람: 유동민",
@@ -143,7 +144,7 @@ const dictionaries: Record<Locale, Dictionary> = {
     hero: {
       tagline: "Push, or fall through the floor you broke",
       sub: "Twenty-five footholds. The square you leave cracks, and the next time it collapses. Push the other side into it.",
-      cta: "Ask to join",
+      cta: "Get the game",
       boardCaption: "The three moves that end a round",
       boardAlt:
         "On a five-by-five field of footholds, an Azure explorer pushes an Ember explorer into a collapsed square.",
@@ -190,11 +191,10 @@ const dictionaries: Record<Locale, Dictionary> = {
       ],
     },
     closing: {
-      title: "On the App Store",
-      status:
-        "On iPhone and iPad, get it from the App Store. Google Play has finished closed testing and is in review for a production listing, with no public store page yet, so write if you want to play it early on Android.",
+      title: "On the App Store and Google Play",
+      status: "On iPhone and iPad, get it from the App Store. On Android, get it from Google Play.",
       appStore: "View on the App Store",
-      cta: "Ask to join",
+      playStore: "View on Google Play",
     },
     footer: {
       developer: "Built by Dongmin Yu",

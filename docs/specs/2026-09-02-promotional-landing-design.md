@@ -147,3 +147,14 @@ The loop was sampled from the live DOM: four distinct frames under normal motion
 
 macOS Chrome refuses a window narrower than 500 pixels and crops the screenshot to whatever `--window-size` asked for, so a plain headless capture at 390 shows a 500-pixel layout in a 390-pixel image and invents an overflow bug that is not there.
 Drive the viewport through the DevTools protocol, not the window size.
+
+## Reconciliation, 2026-10-12
+
+Two statements above no longer hold, and the shipped code in `app/[locale]/page.tsx`, `lib/site.ts` and `lib/dictionaries.ts` is the authority for what replaced them.
+
+"There is no store page to send anyone to" (§What the page is for) and "There is no store link" (§The one action) are false now.
+The App Store page has been public since 2026-09-19 and the Google Play page since 1.5.0, and `lib/site.ts` links both.
+
+The one action is no longer asking to join the closed test by mail.
+The closing section carries one button per store, and the hero's call to action scrolls to them, because without a `/download` redirect one link cannot send each platform to its own store.
+The mail button was removed rather than relabelled: the footer already carries the contact address, and a third button of the same weight would compete with the stores.
