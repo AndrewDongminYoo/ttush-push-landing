@@ -2,12 +2,11 @@ allowBuilds:
   sharp: true
   unrs-resolver: true
 
-# Security overrides for versions next pins below the patched releases:
-# postcss GHSA (sourceMappingURL file disclosure, <=8.5.17) and
-# sharp/libvips CVEs (<0.35.0). Drop when next's own ranges catch up.
+# Compatible security floors for the installed PostCSS 8 and Sharp 0.35 lines.
+# Inspect the resolved consumer graph before changing either version family.
 overrides:
-  postcss: ">=8.5.22"
-  sharp: ">=0.35.0"
+  postcss: ">=8.5.32"
+  sharp: ">=0.35.5"
 # brace-expansion needs no override: its fixes sit inside the ranges minimatch
 # asks for, so an in-range update (`pnpm update brace-expansion --depth 99`)
 # reaches them. GHSA-rgw5-rvv9-x895 took the 5.x copy under minimatch@10 to

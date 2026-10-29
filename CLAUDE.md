@@ -37,4 +37,28 @@ This page describes software in another repository, which is exactly the shape t
 
 ## Do not invent
 
-No store links until a store page exists; `lib/site.ts` exports `null` rather than a plausible URL. No Digital Asset Links statement until the app declares an App Links intent filter, and when it does, the fingerprint to publish is Play App Signing's certificate rather than the local upload key. No terms of service unless someone writes them. See the README table for the full list and the reason for each.
+Use the store links already declared in `lib/site.ts`; do not invent replacement URLs. No Digital Asset Links statement until the app declares an App Links intent filter, and when it does, the fingerprint to publish is Play App Signing's certificate rather than the local upload key. No terms of service unless someone writes them. See the README table for the full list and the reason for each.
+
+## Maintenance Verification
+
+Use Node.js 22.23.4 and pinned pnpm 10.34.9; `corepack pnpm` works without a standalone shim.
+Run frozen installation, `corepack pnpm lint` and `corepack pnpm build` for the declared application gates.
+Keep TypeScript 6 within the installed parser peer range.
+Run `python3 -B .trunk/configs/tests/test_trufflehog_to_sarif.py` for the separate offline scanner regressions.
+The project-local SARIF adapter retains decoded findings without provider verification.
+Run `trunk check --all --no-fix` for the approved full maintenance scan.
+The former braces advisory `GHSA-vfj7-8cjw-p6xm` was withdrawn upstream on 2026-10-23, so its sole obsolete scanner ignore was removed.
+This tooling refresh preserves game-derived source, media, legal text and domain declarations; it does not re-verify the native application privacy claims or deployed behavior.
+
+## Offline scanner boundary
+
+Run `python3 -B .trunk/configs/tests/test_trufflehog_to_sarif.py` to exercise the 17 filesystem JSONL diagnostic reader cases.
+Trunk 1.25.0 consumes native paths in the SARIF path field; URI encoding drops findings for reserved filenames.
+This adapter preserves native paths for Trunk and does not promise portable SARIF URI conformance.
+Columns use Unicode code points, encoded findings retain file-level diagnostics, and scanner input errors fail the gate with `--fail-on-scan-errors`.
+No candidate credential is verified with its provider.
+Application source and document fixtures remain unchanged.
+
+Source-location analysis reads at most 1 MiB plus one sentinel byte per file and caches at most eight files.
+Oversized sources retain file-level findings without a region.
+These limits bound source context; they do not bound all result memory or guarantee that filesystem I/O cannot block.
