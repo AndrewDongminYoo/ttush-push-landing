@@ -1,0 +1,19 @@
+version: "0.2"
+useGitignore: true
+enableGlobDot: true
+ignorePaths:
+  - .git
+  - pnpm-lock.yaml
+dictionaries:
+  - en-gb
+  - node
+  - npm
+  - typescript
+  - softwareTerms
+  - filetypes
+  - fonts
+  - ttush_project_terms
+dictionaryDefinitions:
+  - name: ttush_project_terms
+    path: ./.cspell/project-terms.txt
+    addWords: false
