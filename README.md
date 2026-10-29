@@ -39,3 +39,14 @@ Two things here are copies of something the app owns, and copies drift:
 
 - `public/board/` and `public/sky/` are the app's sprites and background. Re-copy them when the art changes.
 - The hero's move sequence encodes how `engine/src/lib.rs` resolves a push and decays a foothold. A change to move resolution makes it a stale claim, the same way a permission the policy does not name would make the privacy policy one.
+
+## Maintenance Verification
+
+Use Node.js 22.23.4 and pinned pnpm 10.34.9; `corepack pnpm` works without a standalone shim.
+Run frozen installation, `corepack pnpm lint` and `corepack pnpm build` for the declared application gates.
+Keep TypeScript 6 within the installed parser peer range.
+Run `python3 -B .trunk/configs/tests/test_trufflehog_to_sarif.py` for the separate offline scanner regressions.
+The project-local SARIF adapter retains decoded findings without provider verification.
+Run `trunk check --all --no-fix` for the approved full maintenance scan.
+The former braces advisory `GHSA-vfj7-8cjw-p6xm` was withdrawn upstream on 2026-10-23, so its sole obsolete scanner ignore was removed.
+This tooling refresh preserves game-derived source, media, legal text and domain declarations; it does not re-verify the native application privacy claims or deployed behavior.
