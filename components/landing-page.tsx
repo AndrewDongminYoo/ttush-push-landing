@@ -318,7 +318,13 @@ export function GameFaq({ dict }: { dict: Dictionary }) {
   );
 }
 
-export function DownloadSection({ dict }: { dict: Dictionary }) {
+export function DownloadSection({
+  dict,
+  locale,
+}: {
+  dict: Dictionary;
+  locale: Locale;
+}) {
   return (
     <section
       className="download-section"
@@ -338,7 +344,7 @@ export function DownloadSection({ dict }: { dict: Dictionary }) {
         <Image src={appIcon} alt="" width={76} height={76} />
         <h2 id="download-title">{dict.landing.downloadTitle}</h2>
         <p>{dict.landing.downloadBody}</p>
-        <StoreLinks dict={dict} />
+        <StoreLinks dict={dict} locale={locale} />
         <p className="download-note">{dict.landing.downloadNote}</p>
       </div>
     </section>

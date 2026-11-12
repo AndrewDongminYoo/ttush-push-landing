@@ -45,6 +45,9 @@ export function SiteFooter({ locale }: { locale: Locale }) {
           </Link>
         </nav>
       </div>
+      <p className="landing-container store-trademarks">
+        {dict.footer.trademarks}
+      </p>
       <p className="pb-8 text-center text-xs text-ink-dim/85">
         © 2026 Dongmin Yu
       </p>

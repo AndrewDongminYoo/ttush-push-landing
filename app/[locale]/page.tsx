@@ -80,7 +80,7 @@ export default async function HomePage({
         <GameGuide dict={dict} />
         <Opponents dict={dict} />
         <GameFaq dict={dict} />
-        <DownloadSection dict={dict} />
+        <DownloadSection dict={dict} locale={locale} />
       </main>
     </>
   );

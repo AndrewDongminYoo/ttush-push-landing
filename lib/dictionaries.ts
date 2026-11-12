@@ -99,6 +99,7 @@ export type Dictionary = {
     storePrompt: string;
   };
   footer: {
+    trademarks: string;
     developer: string;
     contact: string;
     privacy: string;
@@ -264,6 +265,8 @@ const dictionaries: Record<Locale, Dictionary> = {
       storePrompt: "다운로드하기",
     },
     footer: {
+      trademarks:
+        "Apple, Apple 로고, iPhone 및 iPad는 미국 및 기타 국가에 등록된 Apple Inc.의 상표입니다. App Store는 Apple Inc.의 서비스 상표입니다. Google Play 및 Google Play 로고는 Google LLC의 상표입니다.",
       developer: "만든 사람: 유동민",
       contact: "연락처",
       privacy: "개인정보처리방침",
@@ -434,6 +437,8 @@ const dictionaries: Record<Locale, Dictionary> = {
       storePrompt: "Download on",
     },
     footer: {
+      trademarks:
+        "Apple, the Apple logo, iPhone, and iPad are trademarks of Apple Inc., registered in the U.S. and other countries. App Store is a service mark of Apple Inc. Google Play and the Google Play logo are trademarks of Google LLC.",
       developer: "Built by Dongmin Yu",
       contact: "Contact",
       privacy: "Privacy policy",

@@ -838,46 +838,34 @@ details[open] > summary > span {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 14px;
+  align-items: center;
   margin-top: 30px;
 }
+.download-inner > .store-links {
+  animation: none;
+}
 .store-link {
-  display: flex;
-  gap: 17px;
+  display: inline-flex;
   align-items: center;
-  background: var(--ink);
-  color: var(--void);
-  padding: 14px 22px;
-  min-width: 210px;
-  border-radius: 0;
-  transition:
-    transform 180ms,
-    background 180ms;
+  justify-content: center;
+  padding: 13px;
+  border-radius: 6px;
+}
+.store-link img {
+  display: block;
+  width: auto;
+  height: 52px;
 }
 .store-link:hover {
-  transform: translateY(-3px);
-  background: var(--brass);
+  outline: 2px solid var(--landing-muted);
+  outline-offset: 0;
 }
-.store-link > span:nth-last-child(2) {
-  margin-left: auto;
-}
-.store-link small {
-  display: block;
-  font-size: 10px;
-  text-align: left;
-}
-.store-link strong {
-  display: block;
-  font-weight: 600;
-  font-size: 19px;
-  line-height: 1.4;
-}
-.store-letter {
-  font-size: 30px;
-  font-weight: 500;
-}
-.store-triangle {
-  font-size: 34px;
+.store-trademarks {
+  padding-bottom: 24px;
+  font-size: 11px;
+  line-height: 1.8;
+  text-align: center;
+  color: var(--landing-muted);
 }
 .download-inner > .download-note {
   font-size: 12px;
@@ -1417,26 +1405,13 @@ details[open] > summary > span {
     font-size: 13px;
   }
   .store-links {
-    gap: 10px;
     width: 100%;
   }
   .store-link {
-    min-width: 0;
-    flex: 1;
-    gap: 10px;
-    padding: 13px;
+    padding: 10px;
   }
-  .store-link strong {
-    font-size: 15px;
-  }
-  .store-letter {
-    font-size: 24px;
-  }
-  .store-triangle {
-    font-size: 27px;
-  }
-  .store-link > span:nth-last-child(2) {
-    display: none;
+  .store-link img {
+    height: 40px;
   }
   .download-inner > .download-note {
     font-size: 10px;
