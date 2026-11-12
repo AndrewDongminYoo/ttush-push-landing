@@ -2,17 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import appIcon from "@/app/icon.png";
 import { BoardReplay } from "@/components/board-replay";
+import { LanguageSwitch } from "@/components/language-switch";
 import { StoreLinks } from "@/components/store-links";
 import type { Dictionary } from "@/lib/dictionaries";
 import type { Locale } from "@/lib/i18n";
 
-export function LandingHeader({
-  dict,
-  locale,
-}: {
-  dict: Dictionary;
-  locale: Locale;
-}) {
+export function LandingHeader({ dict, locale }: { dict: Dictionary; locale: Locale }) {
   return (
     <header className="landing-header">
       <div className="landing-container header-inner">
@@ -29,14 +24,9 @@ export function LandingHeader({
           <a href="#faq">{dict.landing.nav.faq}</a>
         </nav>
         <div className="header-actions">
-          <Link
-            className="language-link"
-            href={dict.footer.languageHref}
-            hrefLang={locale === "ko" ? "en" : "ko"}
-            aria-label={dict.footer.language}
-          >
-            <span aria-hidden="true">◎</span> {locale === "ko" ? "EN" : "KO"}
-          </Link>
+          <LanguageSwitch locale={locale} label={dict.footer.language} className="language-link">
+            <span aria-hidden="true">◎</span> {dict.landing.languageShort}
+          </LanguageSwitch>
           <a className="button button-small" href="#stores">
             {dict.landing.nav.download}
             <span aria-hidden="true">↗</span>
@@ -217,6 +207,7 @@ export function GameGuide({ dict }: { dict: Dictionary }) {
             </div>
           ))}
         </div>
+        <p className="rules-engine">{dict.rules.engine}</p>
       </details>
     </section>
   );
@@ -234,21 +225,9 @@ export function Opponents({ dict }: { dict: Dictionary }) {
           </h2>
           <p>{dict.landing.opponentsIntro}</p>
           <div className="expeditions" aria-hidden="true">
-            <Image
-              src="/board/azure-down.png"
-              alt=""
-              width={512}
-              height={512}
-              sizes="160px"
-            />
-            <span>vs.</span>
-            <Image
-              src="/board/ember-down.png"
-              alt=""
-              width={512}
-              height={512}
-              sizes="160px"
-            />
+            <Image src="/board/azure-down.png" alt="" width={512} height={512} sizes="160px" />
+            <span>{dict.landing.versus}</span>
+            <Image src="/board/ember-down.png" alt="" width={512} height={512} sizes="160px" />
           </div>
           <div className="team-names">
             <span>{dict.landing.teams[0]}</span>
@@ -259,14 +238,14 @@ export function Opponents({ dict }: { dict: Dictionary }) {
           <article>
             <div className="option-heading">
               <h3>{dict.landing.localTitle}</h3>
-              <span>1 vs. 1</span>
+              <span>{dict.landing.localTag}</span>
             </div>
             <p>{dict.landing.localBody}</p>
           </article>
           <article>
             <div className="option-heading">
               <h3>{dict.landing.aiTitle}</h3>
-              <span>vs. AI</span>
+              <span>{dict.landing.aiTag}</span>
             </div>
             <p>{dict.landing.aiBody}</p>
             <ul className="difficulty-list">
@@ -290,11 +269,7 @@ export function Opponents({ dict }: { dict: Dictionary }) {
 
 export function GameFaq({ dict }: { dict: Dictionary }) {
   return (
-    <section
-      className="landing-container faq-section"
-      id="faq"
-      aria-labelledby="faq-title"
-    >
+    <section className="landing-container faq-section" id="faq" aria-labelledby="faq-title">
       <div>
         <h2 id="faq-title">{dict.landing.faqTitle}</h2>
         <p>{dict.landing.faqIntro}</p>
@@ -318,19 +293,9 @@ export function GameFaq({ dict }: { dict: Dictionary }) {
   );
 }
 
-export function DownloadSection({
-  dict,
-  locale,
-}: {
-  dict: Dictionary;
-  locale: Locale;
-}) {
+export function DownloadSection({ dict, locale }: { dict: Dictionary; locale: Locale }) {
   return (
-    <section
-      className="download-section"
-      id="stores"
-      aria-labelledby="download-title"
-    >
+    <section className="download-section" id="stores" aria-labelledby="download-title">
       <Image
         src="/sky/air-ruins-twilight.png"
         alt=""

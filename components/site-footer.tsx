@@ -9,9 +9,11 @@ export function SiteFooter({ locale }: { locale: Locale }) {
     <footer className="site-footer">
       <div className="landing-container footer-inner">
         <div className="footer-brand">
-          <Link className="brand" href={`/${locale}`}>
+          <Link className="brand" href={`/${locale}`} aria-label="Ttush Push">
             ttush<span className="brand-light">push</span>
-            <span className="brand-period">.</span>
+            <span className="brand-period" aria-hidden="true">
+              .
+            </span>
           </Link>
           <p>{dict.footer.developer}</p>
           <p>
@@ -24,28 +26,18 @@ export function SiteFooter({ locale }: { locale: Locale }) {
             </a>
           </p>
         </div>
-        <nav
-          className="footer-nav"
-          aria-label={locale === "ko" ? "사이트 정보" : "Site information"}
-        >
+        <nav className="footer-nav" aria-label={dict.footer.navigation}>
           <Link className="hover:text-ink" href={`/${locale}/privacy`}>
             {dict.footer.privacy}
           </Link>
-          <a
-            className="hover:text-ink"
-            href="https://github.com/AndrewDongminYoo/ttush_push"
-          >
+          <a className="hover:text-ink" href="https://github.com/AndrewDongminYoo/ttush_push">
             GitHub
           </a>
           <LanguageSwitch locale={locale} label={dict.footer.language} />
         </nav>
       </div>
-      <p className="landing-container store-trademarks">
-        {dict.footer.trademarks}
-      </p>
-      <p className="pb-8 text-center text-xs text-ink-dim/85">
-        © 2026 Dongmin Yu
-      </p>
+      <p className="landing-container store-trademarks">{dict.footer.trademarks}</p>
+      <p className="pb-8 text-center text-xs text-ink-dim/85">© 2026 Dongmin Yu</p>
     </footer>
   );
 }

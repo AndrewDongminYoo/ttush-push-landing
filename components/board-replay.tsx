@@ -118,15 +118,12 @@ if (process.env.NODE_ENV !== "production") {
   // turn only after an even count. Getting this wrong renders perfectly and
   // simply depicts a position no rules engine could produce.
   const decaySteps = (frame: Frame) =>
-    [...frame.tiles.join("")].reduce(
-      (n, c) => n + (c === "o" ? 2 : c === "x" ? 1 : 0),
-      0,
-    );
+    [...frame.tiles.join("")].reduce((n, c) => n + (c === "o" ? 2 : c === "x" ? 1 : 0), 0);
   frames.forEach((frame, i) => {
     const steps = decaySteps(frame);
     if (steps !== OPENING_MOVES + i) {
       throw new Error(
-        `board-replay frame ${i} shows ${steps} decay steps but ${OPENING_MOVES + i} moves have been played`,
+        `board-replay frame ${i} shows ${steps} decay steps but ${OPENING_MOVES + i} moves have been played`
       );
     }
   });
@@ -149,7 +146,7 @@ if (process.env.NODE_ENV !== "production") {
       const expected = facingForTravel(before, piece);
       if (expected && piece.facing !== expected) {
         throw new Error(
-          `board-replay frame ${i + 1}: ${piece.id} travelled to (${piece.x},${piece.y}) so it faces ${expected}, not ${piece.facing}`,
+          `board-replay frame ${i + 1}: ${piece.id} travelled to (${piece.x},${piece.y}) so it faces ${expected}, not ${piece.facing}`
         );
       }
     }
@@ -207,7 +204,7 @@ function usePrefersReducedMotion(): boolean {
       return () => query.removeEventListener("change", onChange);
     },
     () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-    () => true,
+    () => true
   );
 }
 
@@ -223,7 +220,7 @@ export function BoardReplay({
     pause: string;
     next: string;
     position: string;
-    frames: readonly string[];
+    frames: readonly [string, string, string, string];
   };
 }) {
   const reduced = usePrefersReducedMotion();
@@ -257,18 +254,17 @@ export function BoardReplay({
   }, [running, step]);
 
   const frame = frames[step];
+  const caption = controls.frames[step];
 
   return (
-    <div className="replay" data-ui>
+    <div>
       <div className="replay-stage">
         <div
           key={cycle}
           role="img"
-          aria-label={
-            reduced && step === STILL_FRAME
-              ? stillLabel
-              : `${label} ${controls.frames[step]}`
-          }
+          // The scene, not the frame: the frame caption is announced once by
+          // the live region below, so repeating it here would read it twice.
+          aria-label={reduced && step === STILL_FRAME ? stillLabel : label}
           className="replay-board relative aspect-square w-full"
         >
           {Array.from({ length: SIZE }, (_, y) =>
@@ -299,7 +295,7 @@ export function BoardReplay({
                   ))}
                 </div>
               );
-            }),
+            })
           )}
 
           {frame.pieces.map((piece) => (
@@ -328,19 +324,20 @@ export function BoardReplay({
           ))}
         </div>
       </div>
-      <div className="replay-status" aria-live={running ? "off" : "polite"}>
-        {controls.frames[step]}
+      <div className="replay-status" aria-hidden="true">
+        {caption}
+      </div>
+      {/* The live region keeps one politeness for its whole life, so a change
+          of `aria-live` and of the text in the same render cannot swallow the
+          first announcement. It stays empty while the loop runs on its own,
+          and speaks a frame only once the person has stopped or stepped it. */}
+      <div className="sr-only" aria-live="polite">
+        {running ? "" : `${controls.position}: ${caption}`}
       </div>
       <div className="replay-controls">
-        <div className="replay-dots" aria-label={controls.position}>
+        <div className="replay-dots" aria-hidden="true">
           {frames.map((_, index) => (
-            <span
-              key={index}
-              className={step === index ? "current" : ""}
-              aria-current={step === index ? "step" : undefined}
-            >
-              <span className="sr-only">{index + 1}</span>
-            </span>
+            <span key={index} className={step === index ? "current" : ""} />
           ))}
         </div>
         {!reduced && (

@@ -27,17 +27,11 @@ export async function generateMetadata({
   };
 }
 
-export default async function HomePage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
+export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const dict = getDictionary(locale);
-  const installUrls = [appStoreUrl, playStoreUrl].filter(
-    (url): url is string => url !== null,
-  );
+  const installUrls = [appStoreUrl, playStoreUrl].filter((url): url is string => url !== null);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "VideoGame",
@@ -65,7 +59,7 @@ export default async function HomePage({
   return (
     <>
       <a className="skip-link" href="#main-content">
-        {locale === "ko" ? "본문으로 건너뛰기" : "Skip to content"}
+        {dict.landing.skipLink}
       </a>
       <LandingHeader dict={dict} locale={locale} />
       <main id="main-content" className="landing-main">
