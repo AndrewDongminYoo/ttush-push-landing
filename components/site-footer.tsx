@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LanguageSwitch } from "@/components/language-switch";
 import { getDictionary } from "@/lib/dictionaries";
 import type { Locale } from "@/lib/i18n";
 
@@ -36,13 +37,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
           >
             GitHub
           </a>
-          <Link
-            className="hover:text-ink"
-            href={dict.footer.languageHref}
-            hrefLang={locale === "ko" ? "en" : "ko"}
-          >
-            {dict.footer.language}
-          </Link>
+          <LanguageSwitch locale={locale} label={dict.footer.language} />
         </nav>
       </div>
       <p className="landing-container store-trademarks">

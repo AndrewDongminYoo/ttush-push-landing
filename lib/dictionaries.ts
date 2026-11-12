@@ -138,7 +138,7 @@ const dictionaries: Record<Locale, Dictionary> = {
         },
         {
           name: "무너진 발판",
-          desc: "두 번 딛고 나간 칸. 이제 아무도 들어갈 수 없습니다.",
+          desc: "두 번 딛고 나간 칸. 직접 이동할 수는 없지만, 밀려 들어가면 떨어집니다.",
         },
       ],
     },
@@ -303,7 +303,7 @@ const dictionaries: Record<Locale, Dictionary> = {
         },
         {
           name: "Collapsed",
-          desc: "Moved off twice. Nothing can enter it now.",
+          desc: "Moved off twice. You cannot move onto it, but being pushed onto it makes you fall.",
         },
       ],
     },
