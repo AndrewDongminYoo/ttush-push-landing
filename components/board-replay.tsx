@@ -208,16 +208,38 @@ function usePrefersReducedMotion(): boolean {
   );
 }
 
-export function BoardReplay({ label, stillLabel }: { label: string; stillLabel: string }) {
+export function BoardReplay({
+  label,
+  stillLabel,
+  controls,
+}: {
+  label: string;
+  stillLabel: string;
+  controls: {
+    play: string;
+    pause: string;
+    next: string;
+    position: string;
+    frames: readonly [string, string, string, string];
+  };
+}) {
   const reduced = usePrefersReducedMotion();
   // The loop starts on the still frame rather than on frame 0: it is the frame
   // the server renders and the one reduced motion stops at, and where a loop
   // begins does not matter once it is running.
   const [step, setStep] = useState(STILL_FRAME);
   const [cycle, setCycle] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const running = !paused && !reduced;
+
+  function nextFrame() {
+    setPaused(true);
+    if (step === frames.length - 1) setCycle((value) => value + 1);
+    setStep((value) => (value + 1) % frames.length);
+  }
 
   useEffect(() => {
-    if (reduced) return;
+    if (!running) return;
     const timer = window.setTimeout(() => {
       if (step === frames.length - 1) {
         // Remount on the reset so the pieces do not slide back across the
@@ -229,72 +251,110 @@ export function BoardReplay({ label, stillLabel }: { label: string; stillLabel: 
       }
     }, frames[step].hold);
     return () => window.clearTimeout(timer);
-  }, [reduced, step]);
+  }, [running, step]);
 
   const frame = frames[step];
+  const caption = controls.frames[step];
 
   return (
-    <div
-      key={cycle}
-      role="img"
-      aria-label={reduced ? stillLabel : label}
-      className="relative aspect-square w-full drop-shadow-[0_24px_48px_rgba(0,0,0,0.55)]"
-    >
-      {Array.from({ length: SIZE }, (_, y) =>
-        Array.from({ length: SIZE }, (_, x) => {
-          const state = tileStateAt(frame, x, y);
-          return (
-            <div
-              key={`${x}-${y}`}
-              className="absolute h-1/5 w-1/5"
-              style={{ left: `${x * 20}%`, top: `${visualRow(y) * 20}%` }}
-              aria-hidden
-            >
-              {tileSrc.map((src, layer) => (
-                <Image
-                  key={src}
-                  src={src}
-                  alt=""
-                  fill
-                  sizes="(max-width: 640px) 18vw, 110px"
-                  loading="eager"
-                  // The sprite's stone fills about 76% of its square canvas,
-                  // so at cell size the tiles read as scattered rather than as
-                  // one field. Scaling them up closes the seams to the width
-                  // the app's own board draws.
-                  className="tile-layer scale-[1.24] object-contain"
-                  style={{ opacity: layerOpacity(state, layer) }}
-                />
-              ))}
-            </div>
-          );
-        })
-      )}
-
-      {frame.pieces.map((piece) => (
+    <div>
+      <div className="replay-stage">
         <div
-          key={piece.id}
-          aria-hidden
-          className={`piece ${piece.fallen ? "piece-fallen" : ""}`}
-          style={{
-            // A knocked-out explorer sinks through the hole it is standing on
-            // rather than sliding off the board, because the hole is wherever
-            // the round put it and is not always at the near edge.
-            transform: piece.fallen
-              ? `translate(${piece.x * 100}%, ${visualRow(piece.y) * 100 + 16}%) scale(0.34) rotate(12deg)`
-              : `translate(${piece.x * 100}%, ${visualRow(piece.y) * 100}%)`,
-          }}
+          key={cycle}
+          role="img"
+          // The scene, not the frame: the frame caption is announced once by
+          // the live region below, so repeating it here would read it twice.
+          aria-label={reduced && step === STILL_FRAME ? stillLabel : label}
+          className="replay-board relative aspect-square w-full"
         >
-          <Image
-            src={`/board/${piece.team}-${piece.facing}.png`}
-            alt=""
-            fill
-            sizes="(max-width: 640px) 18vw, 110px"
-            loading="eager"
-            className="object-contain"
-          />
+          {Array.from({ length: SIZE }, (_, y) =>
+            Array.from({ length: SIZE }, (_, x) => {
+              const state = tileStateAt(frame, x, y);
+              return (
+                <div
+                  key={`${x}-${y}`}
+                  className="absolute h-1/5 w-1/5"
+                  style={{ left: `${x * 20}%`, top: `${visualRow(y) * 20}%` }}
+                  aria-hidden
+                >
+                  {tileSrc.map((src, layer) => (
+                    <Image
+                      key={src}
+                      src={src}
+                      alt=""
+                      fill
+                      sizes="(max-width: 640px) 18vw, 110px"
+                      loading="eager"
+                      // The sprite's stone fills about 76% of its square canvas,
+                      // so at cell size the tiles read as scattered rather than as
+                      // one field. Scaling them up closes the seams to the width
+                      // the app's own board draws.
+                      className="tile-layer scale-[1.24] object-contain"
+                      style={{ opacity: layerOpacity(state, layer) }}
+                    />
+                  ))}
+                </div>
+              );
+            })
+          )}
+
+          {frame.pieces.map((piece) => (
+            <div
+              key={piece.id}
+              aria-hidden
+              className={`piece ${piece.fallen ? "piece-fallen" : ""}`}
+              style={{
+                // A knocked-out explorer sinks through the hole it is standing on
+                // rather than sliding off the board, because the hole is wherever
+                // the round put it and is not always at the near edge.
+                transform: piece.fallen
+                  ? `translate(${piece.x * 100}%, ${visualRow(piece.y) * 100 + 16}%) scale(0.34) rotate(12deg)`
+                  : `translate(${piece.x * 100}%, ${visualRow(piece.y) * 100}%)`,
+              }}
+            >
+              <Image
+                src={`/board/${piece.team}-${piece.facing}.png`}
+                alt=""
+                fill
+                sizes="(max-width: 640px) 18vw, 110px"
+                loading="eager"
+                className="object-contain"
+              />
+            </div>
+          ))}
         </div>
-      ))}
+      </div>
+      <div className="replay-status" aria-hidden="true">
+        {caption}
+      </div>
+      {/* The live region keeps one politeness for its whole life, so a change
+          of `aria-live` and of the text in the same render cannot swallow the
+          first announcement. It stays empty while the loop runs on its own,
+          and speaks a frame only once the person has stopped or stepped it. */}
+      <div className="sr-only" aria-live="polite">
+        {running ? "" : `${controls.position}: ${caption}`}
+      </div>
+      <div className="replay-controls">
+        <div className="replay-dots" aria-hidden="true">
+          {frames.map((_, index) => (
+            <span key={index} className={step === index ? "current" : ""} />
+          ))}
+        </div>
+        {!reduced && (
+          <button
+            type="button"
+            onClick={() => setPaused((value) => !value)}
+            aria-label={running ? controls.pause : controls.play}
+          >
+            <span aria-hidden="true">{running ? "Ⅱ" : "▷"}</span>
+            {running ? controls.pause : controls.play}
+          </button>
+        )}
+        <button type="button" onClick={nextFrame}>
+          {controls.next}
+          <span aria-hidden="true">→</span>
+        </button>
+      </div>
     </div>
   );
 }

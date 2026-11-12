@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Gothic_A1, Poppins } from "next/font/google";
 import { notFound } from "next/navigation";
 import { SiteFooter } from "@/components/site-footer";
@@ -40,6 +40,11 @@ export function generateStaticParams() {
 }
 
 export const dynamicParams = false;
+
+export const viewport: Viewport = {
+  themeColor: "#0b0d12",
+  colorScheme: "dark",
+};
 
 export async function generateMetadata({
   params,
@@ -84,7 +89,10 @@ export default async function LocaleLayout({
     notFound();
   }
   return (
-    <html lang={locale} className={`${poppins.variable} ${gothicA1.variable} antialiased`}>
+    <html
+      lang={locale}
+      className={`${poppins.variable} ${gothicA1.variable} antialiased`}
+    >
       <body className="flex min-h-dvh flex-col bg-void font-sans text-ink">
         {children}
         <SiteFooter locale={locale} />
