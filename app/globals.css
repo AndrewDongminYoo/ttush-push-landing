@@ -4,8 +4,12 @@
   /* The page is dark in one mode only, and that is a brand constraint rather
      than a shortcut. The app's own surface is #0b0d12 and every asset on this
      page is lit for a night sky, so a light mode would show the product in a
-     light it never has. The landing page keeps this dark world and uses
-     warmer action colours drawn from the sunset behind the board. */
+     light it never has. Sections never invert either: one theme, top to
+     bottom. The landing page keeps this dark world and uses warmer action
+     colours drawn from the sunset behind the board. The other page-wide lock is
+     shape, and it is radius 0 everywhere, because the game's world is cut
+     stone. The only circles are the ones the game itself draws: the move dot,
+     the push ring and the replay's position dots. */
   color-scheme: dark;
 
   /* Every value below is copied from the app rather than picked for the web.
@@ -27,6 +31,12 @@
      contrast ratio body copy can use. */
   --azure-ink: #7d93f0;
   --ember-ink: #ef8a8a;
+
+  /* Landing-only tokens: the sunset action colour and the muted text and
+     raised surface the long-form sections sit on. */
+  --action: #f1ad7f;
+  --landing-muted: #b4b9c6;
+  --landing-surface: #141923;
 }
 
 @theme inline {
@@ -40,9 +50,7 @@
   --color-azure-ink: var(--azure-ink);
   --color-ember-ink: var(--ember-ink);
   --color-brass: var(--brass);
-  --font-sans:
-    var(--font-poppins), var(--font-gothic-a1), ui-sans-serif, system-ui,
-    sans-serif;
+  --font-sans: var(--font-poppins), var(--font-gothic-a1), ui-sans-serif, system-ui, sans-serif;
 }
 
 body {
@@ -154,12 +162,6 @@ body {
   font-weight: 600;
 }
 
-:root {
-  --action: #f1ad7f;
-  --landing-muted: #b4b9c6;
-  --landing-surface: #141923;
-}
-
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 32px;
@@ -226,7 +228,7 @@ summary {
   white-space: nowrap;
 }
 .brand img {
-  border-radius: 8px;
+  border-radius: 0;
 }
 .brand-light {
   font-weight: 400;
@@ -346,7 +348,6 @@ summary {
 html:lang(en) .hero-copy h1 {
   font-size: clamp(36px, 3.35vw, 50px);
   line-height: 1.15;
-  letter-spacing: -0.055em;
 }
 .hero-lead {
   margin-top: 30px;
@@ -438,7 +439,7 @@ html:lang(en) .hero-copy h1 {
   background: var(--action);
 }
 .hero-board figcaption {
-  font-size: 11px;
+  font-size: 12px;
   text-align: center;
   color: var(--landing-muted);
   margin-top: 3px;
@@ -448,7 +449,7 @@ html:lang(en) .hero-copy h1 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--landing-muted);
 }
 .hero-bottom > span:first-child {
@@ -680,6 +681,13 @@ details[open] > summary > span {
   line-height: 1.9;
   color: var(--landing-muted);
 }
+.rules-engine {
+  border-top: 1px solid var(--edge);
+  padding-block: 20px 30px;
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--landing-muted);
+}
 .opponents-section {
   background: var(--landing-surface);
   padding-block: 96px;
@@ -825,7 +833,6 @@ details[open] > summary > span {
   padding-block: 83px 90px;
 }
 .download-inner > img {
-  border-radius: 15px;
   margin-bottom: 28px;
 }
 .download-inner > p {
@@ -841,28 +848,26 @@ details[open] > summary > span {
   align-items: center;
   margin-top: 30px;
 }
-.download-inner > .store-links {
-  animation: none;
-}
 .store-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 13px;
-  border-radius: 6px;
 }
 .store-link img {
   display: block;
   width: auto;
   height: 52px;
 }
-.store-link:hover {
+/* Hover outlines only an unfocused badge, so it never replaces the global
+   focus ring on a badge that keyboard focus has reached. */
+.store-link:hover:not(:focus-visible) {
   outline: 2px solid var(--landing-muted);
   outline-offset: 0;
 }
 .store-trademarks {
   padding-bottom: 24px;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.8;
   text-align: center;
   color: var(--landing-muted);
@@ -903,7 +908,9 @@ details[open] > summary > span {
   display: inline-flex;
   align-items: center;
 }
-.hero-copy > *,
+/* The headline is the largest first paint, so it is not held back: it renders
+   at once and only the copy around it settles in. */
+.hero-copy > :not(h1),
 .hero-board,
 .hero-bottom {
   animation: settle-in 850ms both;
@@ -937,7 +944,7 @@ details[open] > summary > span {
   .opponents-heading,
   .opponent-options > article,
   .faq-section > div,
-  .download-inner > * {
+  .download-inner > :not(.store-links) {
     animation: settle-in linear both;
     animation-timeline: view();
     animation-range: entry 0% entry 22%;
@@ -1114,7 +1121,7 @@ details[open] > summary > span {
     font-size: 13px;
   }
   .facts-inner span {
-    font-size: 10px;
+    font-size: 12px;
     line-height: 1.8;
   }
   .guide-section {
@@ -1252,7 +1259,7 @@ details[open] > summary > span {
     gap: 7px;
   }
   .hero-platforms {
-    font-size: 10px;
+    font-size: 12px;
   }
   .hero-board {
     width: 92%;
@@ -1262,7 +1269,7 @@ details[open] > summary > span {
     padding: 0 14px 14px;
   }
   .replay-status {
-    font-size: 11px;
+    font-size: 12px;
     margin-top: 10px;
   }
   .replay-controls {
@@ -1270,14 +1277,14 @@ details[open] > summary > span {
     margin-top: 0;
   }
   .replay-controls button {
-    font-size: 11px;
+    font-size: 12px;
   }
   .hero-board figcaption {
-    font-size: 10px;
+    font-size: 12px;
   }
   .hero-bottom {
     min-height: 52px;
-    font-size: 10px;
+    font-size: 12px;
   }
   .facts-inner {
     flex-wrap: wrap;
@@ -1294,7 +1301,7 @@ details[open] > summary > span {
     font-size: 14px;
   }
   .facts-inner span {
-    font-size: 11px;
+    font-size: 12px;
   }
   .landing-main h2 {
     font-size: 29px;
@@ -1318,7 +1325,7 @@ details[open] > summary > span {
     gap: 18px;
   }
   .move-legend > span {
-    font-size: 11px;
+    font-size: 12px;
   }
   .terrain-sequence {
     gap: 17px;
@@ -1328,7 +1335,7 @@ details[open] > summary > span {
     margin-top: 8px;
   }
   .terrain-sequence p {
-    font-size: 10px;
+    font-size: 12px;
   }
   .terrain-arrow {
     right: -17px;
@@ -1385,7 +1392,7 @@ details[open] > summary > span {
     gap: 10px;
   }
   .difficulty-list li {
-    font-size: 11px;
+    font-size: 12px;
     gap: 7px;
   }
   .faq-list details {
@@ -1414,7 +1421,7 @@ details[open] > summary > span {
     height: 40px;
   }
   .download-inner > .download-note {
-    font-size: 10px;
+    font-size: 12px;
   }
   .footer-inner {
     align-items: flex-start;
