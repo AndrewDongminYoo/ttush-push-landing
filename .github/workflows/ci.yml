@@ -31,3 +31,5 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
+      - name: Build production application
+        run: pnpm build
