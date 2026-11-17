@@ -6,13 +6,7 @@ import { appStoreUrl, playStoreUrl } from "@/lib/site";
 // Unmodified official artwork; preserve aspect ratios, clear space, and App Store first.
 // Apple: https://developer.apple.com/app-store/marketing/guidelines/
 // Google: https://partnermarketinghub.withgoogle.com/brands/google-play/google-play/lockups-icons-badges/?folder=86718
-export function StoreLinks({
-  dict,
-  locale,
-}: {
-  dict: Dictionary;
-  locale: Locale;
-}) {
+export function StoreLinks({ dict, locale }: { dict: Dictionary; locale: Locale }) {
   return (
     <div className="store-links">
       {appStoreUrl && (

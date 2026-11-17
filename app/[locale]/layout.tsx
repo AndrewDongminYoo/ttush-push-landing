@@ -89,10 +89,7 @@ export default async function LocaleLayout({
     notFound();
   }
   return (
-    <html
-      lang={locale}
-      className={`${poppins.variable} ${gothicA1.variable} antialiased`}
-    >
+    <html lang={locale} className={`${poppins.variable} ${gothicA1.variable} antialiased`}>
       <body className="flex min-h-dvh flex-col bg-void font-sans text-ink">
         {children}
         <SiteFooter locale={locale} />
